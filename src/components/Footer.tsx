@@ -31,7 +31,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
           {/* Brand */}
-          <div className="md:col-span-5">
+          <div className="md:col-span-4">
             <Link href="/" className="flex items-center gap-2.5 mb-5">
               <BrandMark size={40} radius={10} />
               <span className="font-[family-name:var(--font-display)] text-xl font-extrabold text-ink tracking-tight">
@@ -46,28 +46,44 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          {sections.map((s) => (
-            <div key={s.title} className="md:col-span-3">
-              <h4 className="font-[family-name:var(--font-display)] text-[13px] font-bold text-ink uppercase tracking-[0.12em] mb-4">
-                {s.title}
-              </h4>
-              <ul className="space-y-2.5">
-                {s.links.map((l) => (
-                  <li key={l.label}>
-                    <Link
-                      href={l.href}
-                      className="text-slate hover:text-[var(--color-gold)] text-[14px] transition-colors"
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="md:col-span-2">
+            <h4 className="font-[family-name:var(--font-display)] text-[13px] font-bold text-ink uppercase tracking-[0.12em] mb-4">
+              {sections[0].title}
+            </h4>
+            <ul className="space-y-2.5">
+              {sections[0].links.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    href={l.href}
+                    className="text-slate hover:text-[var(--color-gold)] text-[14px] transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div className="md:col-span-3">
+            <h4 className="font-[family-name:var(--font-display)] text-[13px] font-bold text-ink uppercase tracking-[0.12em] mb-4">
+              {sections[1].title}
+            </h4>
+            <ul className="space-y-2.5">
+              {sections[1].links.map((l) => (
+                <li key={l.label}>
+                  <Link
+                    href={l.href}
+                    className="text-slate hover:text-[var(--color-gold)] text-[14px] transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* Contact */}
-          <div className="md:col-span-1 md:col-start-10 md:col-span-3">
+          <div className="md:col-span-3">
             <h4 className="font-[family-name:var(--font-display)] text-[13px] font-bold text-ink uppercase tracking-[0.12em] mb-4">
               Əlaqə
             </h4>
