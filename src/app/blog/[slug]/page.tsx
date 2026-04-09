@@ -1,33 +1,53 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
-import { api, BlogPost } from "@/lib/api";
+import { api } from "@/lib/api";
 
-export default function BlogDetailPage() {
-  const params = useParams();
-  const slug = params.slug as string;
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-  useEffect(() => {
-    api
-      .getBlogPost(slug)
-      .then(setPost)
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, [slug]);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await api.getBlogPost(slug).catch(() => null);
 
-  if (loading) {
-    return (
-      <div className="pt-32 min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-[var(--color-gold)] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+  if (!post) {
+    return { title: "404 - Tapılmadı | StarSoft" };
   }
+
+  return {
+    title: `${post.title} | StarSoft`,
+    description: post.summary,
+    openGraph: {
+      title: post.title,
+      description: post.summary,
+      url: `https://starsoft.az/blog/${post.slug}`,
+      siteName: "StarSoft",
+      images: post.coverImage ? [
+        {
+          url: post.coverImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        }
+      ] : [],
+      type: "article",
+      publishedTime: post.publishedAt || post.createdAt,
+      authors: post.author ? [post.author] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.summary,
+      images: post.coverImage ? [post.coverImage] : [],
+    },
+  };
+}
+
+export default async function BlogDetailPage({ params }: Props) {
+  const { slug } = await params;
+  const post = await api.getBlogPost(slug).catch(() => null);
 
   if (!post) {
     return (

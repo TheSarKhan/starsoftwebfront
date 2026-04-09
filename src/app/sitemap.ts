@@ -1,22 +1,38 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from 'next';
+import { api } from '@/lib/api';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://starsoft.az";
-  const lastModified = new Date();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = 'https://starsoft.az';
 
+  // Base static routes
   const routes = [
-    { url: "", priority: 1.0 },
-    { url: "/about", priority: 0.8 },
-    { url: "/services", priority: 0.9 },
-    { url: "/projects", priority: 0.8 },
-    { url: "/blog", priority: 0.8 },
-    { url: "/contact", priority: 0.9 },
-  ];
-
-  return routes.map(({ url, priority }) => ({
-    url: `${baseUrl}${url}`,
-    lastModified,
-    changeFrequency: "weekly" as const,
-    priority,
+    '',
+    '/about',
+    '/services',
+    '/projects',
+    '/blog',
+    '/contact',
+  ].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: route === '' ? 1 : 0.8,
   }));
+
+  try {
+    // Dynamic blog posts
+    // We fetch the first page. For a full production sitemap, you might need to paginately fetch all or have a dedicated endpoint for sitemaps.
+    const blogRes = await api.getBlogPosts(0);
+    const blogRoutes = (blogRes.content || []).map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.updatedAt || post.createdAt),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }));
+
+    return [...routes, ...blogRoutes];
+  } catch (error) {
+    // Fallback to basic routes if API fails
+    return routes;
+  }
 }
