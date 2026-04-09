@@ -1,16 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import dynamic from "next/dynamic";
+import { Plus, ImagePlus, X } from "lucide-react";
 import { api, BlogPost } from "@/lib/api";
+
+// Lazy load the heavy Quill editor — only downloaded when the form is opened
+const QuillEditor = dynamic(() => import("@/components/QuillEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-64 bg-mist border border-[var(--color-hairline)] rounded-lg animate-pulse" />
+  ),
+});
 
 const emptyForm: Partial<BlogPost> = {
   title: "",
   slug: "",
   summary: "",
   content: "",
+  coverImage: "",
   tags: "",
-  author: "KhanSoft",
+  author: "StarSoft",
   published: false,
 };
 
@@ -23,7 +33,21 @@ export default function AdminBlogPage() {
   const [form, setForm] = useState<Partial<BlogPost>>(emptyForm);
   const [editing, setEditing] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const token = () => localStorage.getItem("khansoft_token") || "";
+  const [coverUploading, setCoverUploading] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const token = () => localStorage.getItem("starsoft_token") || "";
+
+  const uploadCover = async (file: File) => {
+    setCoverUploading(true);
+    try {
+      const { url } = await api.admin.uploadImage(token(), file);
+      setForm((f) => ({ ...f, coverImage: url }));
+    } catch {
+      alert("Şəkil yüklənmədi");
+    } finally {
+      setCoverUploading(false);
+    }
+  };
 
   const load = () =>
     api.admin
@@ -136,12 +160,46 @@ export default function AdminBlogPage() {
               />
             </div>
             <div>
+              <label className={labelCls}>Başlıq şəkli</label>
+              {form.coverImage ? (
+                <div className="relative rounded-lg overflow-hidden border border-[var(--color-hairline)] max-w-md">
+                  <img src={form.coverImage} alt="Cover" className="w-full h-48 object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, coverImage: "" })}
+                    className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-md hover:bg-black/70 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  disabled={coverUploading}
+                  onClick={() => coverInputRef.current?.click()}
+                  className="flex items-center gap-2 px-4 py-3 border-2 border-dashed border-[var(--color-hairline-strong)] rounded-lg text-slate text-[14px] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors disabled:opacity-50"
+                >
+                  <ImagePlus size={18} />
+                  {coverUploading ? "Yüklənir..." : "Şəkil seç"}
+                </button>
+              )}
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadCover(file);
+                  e.target.value = "";
+                }}
+              />
+            </div>
+            <div>
               <label className={labelCls}>Məzmun *</label>
-              <textarea
-                rows={10}
+              <QuillEditor
                 value={form.content || ""}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
-                className={`${inputCls} resize-none font-mono text-[13px]`}
+                onChange={(v) => setForm({ ...form, content: v })}
                 placeholder="Blog yazısının məzmunu..."
               />
             </div>
@@ -176,7 +234,7 @@ export default function AdminBlogPage() {
         <table className="w-full">
           <thead className="bg-mist border-b border-[var(--color-hairline)]">
             <tr>
-              {["Başlıq", "Müəllif", "Etiketlər", "Baxış", "Status", ""].map((h) => (
+              {["Şəkil", "Başlıq", "Müəllif", "Etiketlər", "Baxış", "Status", ""].map((h) => (
                 <th
                   key={h}
                   className="text-left px-4 py-3 text-mist-slate text-[12px] font-semibold uppercase tracking-[0.08em]"
@@ -189,6 +247,19 @@ export default function AdminBlogPage() {
           <tbody className="divide-y divide-[var(--color-hairline)]">
             {posts.map((p) => (
               <tr key={p.id} className="hover:bg-mist transition-colors">
+                <td className="px-4 py-3">
+                  {p.coverImage ? (
+                    <img
+                      src={p.coverImage}
+                      alt={p.title}
+                      className="w-16 h-12 object-cover rounded-md border border-[var(--color-hairline)]"
+                    />
+                  ) : (
+                    <div className="w-16 h-12 rounded-md bg-mist border border-[var(--color-hairline)] flex items-center justify-center">
+                      <span className="text-[10px] text-slate">Yoxdur</span>
+                    </div>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-ink text-[14px] font-medium">{p.title}</td>
                 <td className="px-4 py-3 text-slate text-[13px]">{p.author}</td>
                 <td className="px-4 py-3 text-slate text-[12px]">{p.tags}</td>

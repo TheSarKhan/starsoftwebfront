@@ -76,6 +76,16 @@ export default function BlogDetailPage() {
             {post.title}
           </h1>
 
+          {post.coverImage && (
+            <div className="rounded-xl overflow-hidden mb-8">
+              <img
+                src={post.coverImage}
+                alt={post.title}
+                className="w-full h-auto max-h-[420px] object-cover"
+              />
+            </div>
+          )}
+
           <div className="flex items-center gap-3 text-mist-slate text-[13px] mb-8 pb-8 border-b border-[var(--color-hairline)]">
             <span className="font-medium">{post.author}</span>
             <span>·</span>
@@ -94,9 +104,17 @@ export default function BlogDetailPage() {
             </p>
           )}
 
-          <div className="text-ink text-[17px] leading-[1.8] whitespace-pre-wrap">
-            {post.content}
-          </div>
+          <div
+            className="prose prose-lg max-w-none text-ink leading-[1.8]
+              prose-headings:font-[family-name:var(--font-display)] prose-headings:text-ink prose-headings:tracking-[-0.02em]
+              prose-h2:text-[26px] prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
+              prose-h3:text-[21px] prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3
+              prose-p:mb-5 prose-p:text-[17px]
+              prose-strong:text-ink prose-strong:font-semibold
+              prose-ul:my-4 prose-li:text-[17px] prose-li:text-slate
+              prose-a:text-[var(--color-gold)] prose-a:font-medium hover:prose-a:text-[var(--color-gold-hover)]"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </AnimatedSection>
       </div>
     </article>

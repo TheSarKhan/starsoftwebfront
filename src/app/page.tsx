@@ -10,12 +10,14 @@ import {
   Server,
   Zap,
   BarChart3,
+  Bot,
   ArrowRight,
   Check,
 } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/SectionHeader";
 import GoldButton from "@/components/GoldButton";
+import Image from "next/image";
 import { api, Service, Project } from "@/lib/api";
 
 const SERVICE_ICONS: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>> = {
@@ -25,6 +27,7 @@ const SERVICE_ICONS: Record<string, React.ComponentType<{ size?: number; strokeW
   Server,
   Zap,
   BarChart3,
+  Bot,
 };
 
 const fallbackServices = [
@@ -64,6 +67,12 @@ const fallbackServices = [
     descriptionAz:
       "Məlumatınızı qərara çevirən dashboard və hesabat sistemləri.",
   },
+  {
+    icon: "Bot",
+    titleAz: "Telegram botlar",
+    descriptionAz:
+      "Sifariş qəbulu, müştəri dəstəyi və bildirişlər üçün Telegram botlar.",
+  },
 ];
 
 const valueProps = [
@@ -84,7 +93,7 @@ export default function HomePage() {
 
   const displayServices =
     services.length > 0
-      ? services.slice(0, 6)
+      ? services.slice(0, 7)
       : (fallbackServices as unknown as Service[]);
 
   return (
@@ -113,8 +122,8 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="display font-[family-name:var(--font-display)] text-[44px] md:text-[64px] lg:text-[72px] font-extrabold text-ink leading-[1.05] tracking-[-0.03em] mb-6"
           >
-            Biznesinizin texniki tərəfi{" "}
-            <span className="text-[var(--color-gold)]">artıq sizin dərdiniz deyil</span>.
+            Texnologiyanızı{" "}
+            <span className="text-[var(--color-gold)]">ulduzlara çatdırırıq</span>.
           </motion.h1>
 
           <motion.p
@@ -124,8 +133,8 @@ export default function HomePage() {
             className="text-slate text-[18px] md:text-[20px] leading-relaxed max-w-2xl mx-auto mb-10"
           >
             Sayt, mobil tətbiq, təhlükəsizlik, infrastruktur, avtomatlaşdırma,
-            analitika — hər layihəyə uyğun mütəxəssislər seçirik, sabit
-            qiymətə. Daxili IT komanda saxlamadan, daha az xərclə, daha çox iş.
+            analitika — hər layihəyə uyğun mütəxəssislər, sabit qiymətə.
+            Siz biznesə fokus olun, qalanını biz parlaq edirik.
           </motion.p>
 
           <motion.div
@@ -164,8 +173,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4">
           <SectionHeader
             eyebrow="Xidmətlərimiz"
-            title="Bir tərəfdaş. Bütün texniki ehtiyaclar."
-            subtitle="6 xidmət, bir tərəfdaş, bir məsuliyyət. Hər layihə üçün yeni satıcı axtarmırsınız."
+            title="Bir tərəfdaş. Altı sahə. Sıfır baş ağrısı."
+            subtitle="Hər layihə üçün yeni satıcı axtarmırsınız — bir ulduzdan hər şey parlayır."
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -202,17 +211,16 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
           <AnimatedSection>
             <span className="inline-block text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--color-gold)] mb-4">
-              Niyə KhanSoft
+              Niyə biz?
             </span>
             <h2 className="font-[family-name:var(--font-display)] text-[32px] md:text-[40px] font-bold text-ink leading-[1.15] tracking-[-0.02em] mb-5">
               Daha az resursla, daha çox iş.
             </h2>
             <p className="text-slate text-[17px] leading-relaxed mb-6">
               Daxili IT komanda saxlamaq ayda 8–12 min AZN xərcdir.
-              KhanSoft hər layihəyə uyğun mütəxəssislər seçir — siz yalnız
-              real lazım olan üçün ödəyirsiniz. Daha sürətli, daha ucuz,
-              daha az risk. Siz biznesə fokus olun, texniki tərəfi biz
-              götürürük.
+              StarSoft hər layihəyə uyğun mütəxəssislər seçir — siz yalnız
+              real lazım olan üçün ödəyirsiniz. Siz biznesə fokus olun,
+              texnologiyanı biz parlaq edirik.
             </p>
             <ul className="space-y-3 mb-8">
               {[
@@ -318,12 +326,13 @@ export default function HomePage() {
                     target={p.projectUrl ? "_blank" : undefined}
                     className="card-lift block h-full bg-white border border-[var(--color-hairline)] rounded-xl overflow-hidden"
                   >
-                    <div className="h-44 bg-gradient-to-br from-[var(--color-gold-soft)] to-white flex items-center justify-center border-b border-[var(--color-hairline)] overflow-hidden">
+                    <div className="h-44 relative bg-gradient-to-br from-[var(--color-gold-soft)] to-white flex items-center justify-center border-b border-[var(--color-hairline)] overflow-hidden">
                       {p.imageUrl ? (
-                        <img
+                        <Image
                           src={`${(process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:8080")}${p.imageUrl}`}
                           alt={p.title}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       ) : (
                         <span className="font-[family-name:var(--font-display)] text-[64px] font-extrabold text-[var(--color-gold)]/30 leading-none">

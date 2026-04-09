@@ -4,11 +4,11 @@ import { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Layihələr",
   description:
-    "KhanSoft layihələri. Flagship: testup.az — müasir və zəngin funksionallı imtahan/test platforması.",
+    "StarSoft layihələri. Flagship: testup.az — müasir və zəngin funksionallı imtahan/test platforması.",
   openGraph: {
-    title: "Layihələr | KhanSoft",
+    title: "Layihələr | StarSoft",
     description: "Real iş, real nəticə. Flagship layihəmiz testup.az.",
-    url: "https://khansoft.az/projects",
+    url: "https://starsoft.az/projects",
   },
 };
 

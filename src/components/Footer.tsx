@@ -35,11 +35,11 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2.5 mb-5">
               <BrandMark size={40} radius={10} />
               <span className="font-[family-name:var(--font-display)] text-xl font-extrabold text-ink tracking-tight">
-                KhanSoft
+                StarSoft
               </span>
             </Link>
             <p className="text-slate text-[15px] leading-relaxed max-w-md">
-              Biznesinizin texniki tərəfi artıq sizin dərdiniz deyil. Web, mobil,
+              Texnologiyanızı ulduzlara çatdırırıq. Web, mobil,
               təhlükəsizlik, infrastruktur, avtomatlaşdırma və analitika —
               bir tərəfdaşdan, sabit qiymətə.
             </p>
@@ -96,7 +96,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-6 border-t border-[var(--color-hairline)] flex flex-col md:flex-row justify-between items-center gap-3 text-[13px] text-mist-slate">
-          <p>&copy; {new Date().getFullYear()} KhanSoft. Bütün hüquqlar qorunur.</p>
+          <p>&copy; {new Date().getFullYear()} StarSoft. Bütün hüquqlar qorunur.</p>
           <p>Bakıda hazırlanır. Azərbaycan biznesi üçün.</p>
         </div>
       </div>

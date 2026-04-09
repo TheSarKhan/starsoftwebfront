@@ -5,14 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { prefetch } from "@/lib/api";
 
+// Map each route to its prefetch function
 const navLinks = [
-  { href: "/", label: "Ana səhifə" },
-  { href: "/about", label: "Haqqımızda" },
-  { href: "/services", label: "Xidmətlər" },
-  { href: "/projects", label: "Layihələr" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Əlaqə" },
+  { href: "/",         label: "Ana səhifə",  prefetchFn: undefined },
+  { href: "/about",    label: "Haqqımızda",  prefetchFn: undefined },
+  { href: "/services", label: "Xidmətlər",   prefetchFn: prefetch.services },
+  { href: "/projects", label: "Layihələr",   prefetchFn: prefetch.projects },
+  { href: "/blog",     label: "Blog",         prefetchFn: prefetch.blogPosts },
+  { href: "/contact",  label: "Əlaqə",       prefetchFn: undefined },
 ];
 
 import BrandMark from "@/components/BrandMark";
@@ -22,7 +24,7 @@ function Logo() {
     <div className="flex items-center gap-2.5">
       <BrandMark size={36} radius={8} />
       <span className="font-[family-name:var(--font-display)] text-[19px] font-extrabold text-ink tracking-tight">
-        KhanSoft
+        StarSoft
       </span>
     </div>
   );
@@ -53,7 +55,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" aria-label="KhanSoft ana səhifə">
+          <Link href="/" aria-label="StarSoft ana səhifə">
             <Logo />
           </Link>
 
@@ -65,6 +67,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onMouseEnter={() => link.prefetchFn?.()}
                   className={`px-3.5 py-2 text-[14px] font-medium rounded-md transition-colors ${
                     active
                       ? "text-[var(--color-gold)]"
@@ -77,7 +80,7 @@ export default function Navbar() {
             })}
             <Link
               href="/contact"
-              className="ml-3 px-4 py-2 bg-[var(--color-gold)] text-white text-[14px] font-semibold rounded-lg hover:bg-[var(--color-gold-hover)] transition-colors"
+              className="ml-3 px-4 py-2 bg-[var(--color-gold)] !text-white text-[14px] font-semibold rounded-lg hover:bg-[var(--color-gold-hover)] transition-colors"
             >
               Pulsuz konsultasiya
             </Link>
@@ -109,6 +112,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onMouseEnter={() => link.prefetchFn?.()}
                   className={`px-3 py-3 rounded-md text-[15px] font-medium transition-colors ${
                     pathname === link.href
                       ? "text-[var(--color-gold)] bg-[var(--color-gold-soft)]"
@@ -120,7 +124,7 @@ export default function Navbar() {
               ))}
               <Link
                 href="/contact"
-                className="mt-2 px-4 py-3 bg-[var(--color-gold)] text-white text-[15px] font-semibold rounded-lg text-center"
+                className="mt-2 px-4 py-3 bg-[var(--color-gold)] !text-white text-[15px] font-semibold rounded-lg text-center"
               >
                 Pulsuz konsultasiya
               </Link>

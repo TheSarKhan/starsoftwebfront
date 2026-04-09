@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Globe,
@@ -8,6 +9,7 @@ import {
   Server,
   Zap,
   BarChart3,
+  Bot,
   ArrowRight,
   Check,
 } from "lucide-react";
@@ -105,6 +107,21 @@ const services = [
       "Tarixi məlumat və proqnoz analizi",
     ],
   },
+  {
+    id: "telegram",
+    icon: Bot,
+    title: "Telegram botlar",
+    tagline: "Müştəriləriniz artıq Telegram-dadır — siz də orada olun.",
+    description:
+      "Sifariş qəbulu, müştəri dəstəyi, bildirişlər, CRM inteqrasiya — hamısı bir Telegram botda. Müştəriləriniz tanış mühitdən çıxmadan sizinlə işləyir.",
+    deliverables: [
+      "Sifariş və rezervasiya qəbulu",
+      "Avtomatik müştəri dəstəyi (FAQ, status sorğusu)",
+      "Bildiriş sistemi (sifariş, ödəniş, xatırlatma)",
+      "CRM / admin panelinizlə inteqrasiya",
+      "Çoxdilli dəstək (az/en/ru)",
+    ],
+  },
 ];
 
 export default function ServicesPage() {
@@ -128,8 +145,8 @@ export default function ServicesPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="display font-[family-name:var(--font-display)] text-[40px] md:text-[56px] font-extrabold text-ink leading-[1.08] tracking-[-0.025em] mb-6"
           >
-            Hər ehtiyaca{" "}
-            <span className="text-[var(--color-gold)]">uyğun mütəxəssis</span>.
+            Altı sahə,{" "}
+            <span className="text-[var(--color-gold)]">bir parlaq tərəfdaş</span>.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -137,7 +154,7 @@ export default function ServicesPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-slate text-[18px] md:text-[19px] leading-relaxed"
           >
-            Altı satıcı əvəzinə bir tərəfdaş. Ehtiyacınızı dinləyirik,
+            Altı satıcı əvəzinə bir ulduz. Ehtiyacınızı dinləyirik,
             uyğun mütəxəssisləri seçirik, sabit qiymətlə təhvil veririk.
           </motion.p>
         </div>
@@ -205,7 +222,7 @@ export default function ServicesPage() {
               Ehtiyacınızı birlikdə analiz edirik. Konkret plan, konkret
               qiymət — heç bir öhdəlik yoxdur.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
               <GoldButton href="/contact" size="lg" withArrow>
                 Layihənizi müzakirə edək
               </GoldButton>
@@ -218,6 +235,14 @@ export default function ServicesPage() {
                 WhatsApp ilə yazın
                 <ArrowRight size={16} strokeWidth={2.25} />
               </a>
+            </div>
+            <div className="flex items-center justify-center gap-6 text-[14px]">
+              <Link href="/projects" className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] font-medium transition-colors">
+                Layihələrimizə baxın →
+              </Link>
+              <Link href="/blog" className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] font-medium transition-colors">
+                Bloqu oxuyun →
+              </Link>
             </div>
           </AnimatedSection>
         </div>

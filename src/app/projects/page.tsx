@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import AnimatedSection from "@/components/AnimatedSection";
 import GoldButton from "@/components/GoldButton";
+import Image from "next/image";
 import { api, Project } from "@/lib/api";
 
 const API_HOST =
@@ -65,12 +66,13 @@ export default function ProjectsPage() {
               return (
                 <AnimatedSection key={p.id} delay={i * 0.08}>
                   <article className="bg-white border border-[var(--color-hairline)] rounded-2xl overflow-hidden h-full flex flex-col card-lift">
-                    <div className="h-48 bg-gradient-to-br from-[var(--color-gold-soft)] via-white to-[var(--color-gold-soft)] flex items-center justify-center border-b border-[var(--color-hairline)] overflow-hidden">
+                    <div className="h-48 relative bg-gradient-to-br from-[var(--color-gold-soft)] via-white to-[var(--color-gold-soft)] flex items-center justify-center border-b border-[var(--color-hairline)] overflow-hidden">
                       {p.imageUrl ? (
-                        <img
+                        <Image
                           src={`${API_HOST}${p.imageUrl}`}
                           alt={p.title}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       ) : (
                         <span className="font-[family-name:var(--font-display)] text-[80px] font-extrabold text-[var(--color-gold)]/25 leading-none">

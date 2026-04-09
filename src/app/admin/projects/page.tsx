@@ -27,7 +27,7 @@ export default function AdminProjectsPage() {
   const [showForm, setShowForm] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const token = () => localStorage.getItem("khansoft_token") || "";
+  const token = () => localStorage.getItem("starsoft_token") || "";
 
   const load = () => api.admin.getProjects(token()).then(setProjects).catch(() => {});
   useEffect(() => {

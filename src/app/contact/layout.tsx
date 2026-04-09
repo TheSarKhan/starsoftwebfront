@@ -4,11 +4,11 @@ import { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Əlaqə",
   description:
-    "KhanSoft ilə əlaqə: pulsuz ilk konsultasiya, eyni iş günü cavab. Bakı, Azərbaycan. Email, telefon, WhatsApp.",
+    "StarSoft ilə əlaqə: pulsuz ilk konsultasiya, eyni iş günü cavab. Bakı, Azərbaycan. Email, telefon, WhatsApp.",
   openGraph: {
-    title: "Əlaqə | KhanSoft",
-    description: "KhanSoft ilə əlaqə saxlayın — pulsuz ilkin məsləhət.",
-    url: "https://khansoft.az/contact",
+    title: "Əlaqə | StarSoft",
+    description: "StarSoft ilə əlaqə saxlayın — pulsuz ilkin məsləhət.",
+    url: "https://starsoft.az/contact",
   },
 };
 

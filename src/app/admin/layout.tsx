@@ -34,8 +34,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setAuthChecked(true);
       return;
     }
-    const token = localStorage.getItem("khansoft_token");
-    const userStr = localStorage.getItem("khansoft_user");
+    const token = localStorage.getItem("starsoft_token");
+    const userStr = localStorage.getItem("starsoft_user");
     if (!token) {
       router.replace("/admin/login");
       return;
@@ -45,8 +45,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [pathname, router]);
 
   const logout = () => {
-    localStorage.removeItem("khansoft_token");
-    localStorage.removeItem("khansoft_user");
+    localStorage.removeItem("starsoft_token");
+    localStorage.removeItem("starsoft_user");
     router.push("/admin/login");
   };
 
@@ -70,7 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/" className="flex items-center gap-3">
             <BrandMark size={36} radius={8} />
             <span className="font-[family-name:var(--font-display)] font-bold text-ink">
-              KhanSoft
+              StarSoft
             </span>
           </Link>
         </div>
@@ -79,10 +79,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
+
+            const handlePrefetch = () => {
+              const t = localStorage.getItem("starsoft_token");
+              if (!t) return;
+              if (item.href === "/admin") api.admin.getStats(t).catch(()=>{});
+              if (item.href === "/admin/services") api.admin.getServices(t).catch(()=>{});
+              if (item.href === "/admin/projects") api.admin.getProjects(t).catch(()=>{});
+              if (item.href === "/admin/blog") api.admin.getBlogPosts(t, 0).catch(()=>{});
+              if (item.href === "/admin/contacts") api.admin.getContacts(t).catch(()=>{});
+              if (item.href === "/admin/settings") api.admin.getSettings(t).catch(()=>{});
+            };
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
+                onMouseEnter={handlePrefetch}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-[14px] font-medium transition-all ${
                   active
                     ? "bg-[var(--color-gold-soft)] text-[var(--color-gold)]"

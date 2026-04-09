@@ -1,5 +1,35 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
+// ─── In-memory cache ────────────────────────────────────────────────────────
+// Lives for the browser session. Eliminates redundant API round-trips when
+// navigating back to a page that was already loaded.
+const _cache = new Map<string, { data: unknown; at: number }>();
+const PUBLIC_TTL = 60_000;   // 60 s — public, rarely changes
+const ADMIN_TTL  = 20_000;   // 20 s — admin data changes more often
+
+function fromCache<T>(key: string, ttl: number): T | undefined {
+  const hit = _cache.get(key);
+  if (hit && Date.now() - hit.at < ttl) return hit.data as T;
+  return undefined;
+}
+function toCache(key: string, data: unknown) {
+  _cache.set(key, { data, at: Date.now() });
+}
+/** Call after mutations to force fresh data on next read */
+export function invalidateCache(...keys: string[]) {
+  if (keys.length === 0) _cache.clear();
+  else keys.forEach((k) => _cache.delete(k));
+}
+
+async function cached<T>(key: string, fn: () => Promise<T>, ttl = PUBLIC_TTL): Promise<T> {
+  const hit = fromCache<T>(key, ttl);
+  if (hit !== undefined) return hit;
+  const data = await fn();
+  toCache(key, data);
+  return data;
+}
+
+// ─── Fetch helpers ───────────────────────────────────────────────────────────
 async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
     headers: { "Content-Type": "application/json" },
@@ -20,15 +50,16 @@ function authFetcher<T>(url: string, token: string, options?: RequestInit): Prom
   });
 }
 
+// ─── API ─────────────────────────────────────────────────────────────────────
 export const api = {
-  // Public
-  getServices: () => fetcher<Service[]>("/services"),
-  getProjects: () => fetcher<Project[]>("/projects"),
-  getFeaturedProjects: () => fetcher<Project[]>("/projects/featured"),
-  getBlogPosts: (page = 0) => fetcher<PageResponse<BlogPost>>(`/blog?page=${page}`),
-  getBlogPost: (slug: string) => fetcher<BlogPost>(`/blog/${slug}`),
-  getTeam: () => fetcher<TeamMember[]>("/team"),
-  getSettings: () => fetcher<Record<string, string>>("/settings"),
+  // Public — all cached
+  getServices:         () => cached("services",  () => fetcher<Service[]>("/services")),
+  getProjects:         () => cached("projects",  () => fetcher<Project[]>("/projects")),
+  getFeaturedProjects: () => cached("projects:featured", () => fetcher<Project[]>("/projects/featured")),
+  getBlogPosts:        (page = 0) => cached(`blog:${page}`, () => fetcher<PageResponse<BlogPost>>(`/blog?page=${page}`)),
+  getBlogPost:         (slug: string) => cached(`blog:${slug}`, () => fetcher<BlogPost>(`/blog/${slug}`)),
+  getTeam:             () => cached("team",     () => fetcher<TeamMember[]>("/team")),
+  getSettings:         () => cached("settings", () => fetcher<Record<string, string>>("/settings")),
   submitContact: (data: ContactForm) =>
     fetcher<{ message: string }>("/contact", { method: "POST", body: JSON.stringify(data) }),
 
@@ -36,61 +67,118 @@ export const api = {
   login: (data: { username: string; password: string }) =>
     fetcher<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(data) }),
 
-  // Admin
+  // Admin — shorter TTL; mutations invalidate relevant keys
   admin: {
-    getStats: (token: string) => authFetcher<DashboardStats>("/admin/stats", token),
-    getServices: (token: string) => authFetcher<Service[]>("/admin/services", token),
-    createService: (token: string, data: Partial<Service>) =>
-      authFetcher<Service>("/admin/services", token, { method: "POST", body: JSON.stringify(data) }),
-    updateService: (token: string, id: number, data: Partial<Service>) =>
-      authFetcher<Service>(`/admin/services/${id}`, token, { method: "PUT", body: JSON.stringify(data) }),
-    deleteService: (token: string, id: number) =>
-      authFetcher<void>(`/admin/services/${id}`, token, { method: "DELETE" }),
+    getStats: (token: string) =>
+      cached("admin:stats", () => authFetcher<DashboardStats>("/admin/stats", token), ADMIN_TTL),
 
-    getProjects: (token: string) => authFetcher<Project[]>("/admin/projects", token),
-    createProject: (token: string, data: Partial<Project>) =>
-      authFetcher<Project>("/admin/projects", token, { method: "POST", body: JSON.stringify(data) }),
-    updateProject: (token: string, id: number, data: Partial<Project>) =>
-      authFetcher<Project>(`/admin/projects/${id}`, token, { method: "PUT", body: JSON.stringify(data) }),
-    deleteProject: (token: string, id: number) =>
-      authFetcher<void>(`/admin/projects/${id}`, token, { method: "DELETE" }),
+    getServices: (token: string) =>
+      cached("admin:services", () => authFetcher<Service[]>("/admin/services", token), ADMIN_TTL),
+    createService: async (token: string, data: Partial<Service>) => {
+      const res = await authFetcher<Service>("/admin/services", token, { method: "POST", body: JSON.stringify(data) });
+      invalidateCache("admin:services", "services", "admin:stats");
+      return res;
+    },
+    updateService: async (token: string, id: number, data: Partial<Service>) => {
+      const res = await authFetcher<Service>(`/admin/services/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+      invalidateCache("admin:services", "services");
+      return res;
+    },
+    deleteService: async (token: string, id: number) => {
+      await authFetcher<void>(`/admin/services/${id}`, token, { method: "DELETE" });
+      invalidateCache("admin:services", "services", "admin:stats");
+    },
+
+    getProjects: (token: string) =>
+      cached("admin:projects", () => authFetcher<Project[]>("/admin/projects", token), ADMIN_TTL),
+    createProject: async (token: string, data: Partial<Project>) => {
+      const res = await authFetcher<Project>("/admin/projects", token, { method: "POST", body: JSON.stringify(data) });
+      invalidateCache("admin:projects", "projects", "projects:featured", "admin:stats");
+      return res;
+    },
+    updateProject: async (token: string, id: number, data: Partial<Project>) => {
+      const res = await authFetcher<Project>(`/admin/projects/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+      invalidateCache("admin:projects", "projects", "projects:featured");
+      return res;
+    },
+    deleteProject: async (token: string, id: number) => {
+      await authFetcher<void>(`/admin/projects/${id}`, token, { method: "DELETE" });
+      invalidateCache("admin:projects", "projects", "projects:featured", "admin:stats");
+    },
 
     getBlogPosts: (token: string, page = 0) =>
-      authFetcher<PageResponse<BlogPost>>(`/admin/blog?page=${page}`, token),
-    createBlogPost: (token: string, data: Partial<BlogPost>) =>
-      authFetcher<BlogPost>("/admin/blog", token, { method: "POST", body: JSON.stringify(data) }),
-    updateBlogPost: (token: string, id: number, data: Partial<BlogPost>) =>
-      authFetcher<BlogPost>(`/admin/blog/${id}`, token, { method: "PUT", body: JSON.stringify(data) }),
-    deleteBlogPost: (token: string, id: number) =>
-      authFetcher<void>(`/admin/blog/${id}`, token, { method: "DELETE" }),
+      cached(`admin:blog:${page}`, () => authFetcher<PageResponse<BlogPost>>(`/admin/blog?page=${page}`, token), ADMIN_TTL),
+    createBlogPost: async (token: string, data: Partial<BlogPost>) => {
+      const res = await authFetcher<BlogPost>("/admin/blog", token, { method: "POST", body: JSON.stringify(data) });
+      invalidateCache("admin:blog:0", "blog:0", "admin:stats");
+      return res;
+    },
+    updateBlogPost: async (token: string, id: number, data: Partial<BlogPost>) => {
+      const res = await authFetcher<BlogPost>(`/admin/blog/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+      // Invalidate all blog pages + public blog cache
+      for (const k of _cache.keys()) {
+        if (k.startsWith("blog:") || k.startsWith("admin:blog:")) _cache.delete(k);
+      }
+      return res;
+    },
+    deleteBlogPost: async (token: string, id: number) => {
+      await authFetcher<void>(`/admin/blog/${id}`, token, { method: "DELETE" });
+      for (const k of _cache.keys()) {
+        if (k.startsWith("blog:") || k.startsWith("admin:blog:")) _cache.delete(k);
+      }
+      invalidateCache("admin:stats");
+    },
 
-    getTeam: (token: string) => authFetcher<TeamMember[]>("/admin/team", token),
-    createTeamMember: (token: string, data: Partial<TeamMember>) =>
-      authFetcher<TeamMember>("/admin/team", token, { method: "POST", body: JSON.stringify(data) }),
-    updateTeamMember: (token: string, id: number, data: Partial<TeamMember>) =>
-      authFetcher<TeamMember>(`/admin/team/${id}`, token, { method: "PUT", body: JSON.stringify(data) }),
-    deleteTeamMember: (token: string, id: number) =>
-      authFetcher<void>(`/admin/team/${id}`, token, { method: "DELETE" }),
+    getTeam: (token: string) =>
+      cached("admin:team", () => authFetcher<TeamMember[]>("/admin/team", token), ADMIN_TTL),
+    createTeamMember: async (token: string, data: Partial<TeamMember>) => {
+      const res = await authFetcher<TeamMember>("/admin/team", token, { method: "POST", body: JSON.stringify(data) });
+      invalidateCache("admin:team", "team", "admin:stats");
+      return res;
+    },
+    updateTeamMember: async (token: string, id: number, data: Partial<TeamMember>) => {
+      const res = await authFetcher<TeamMember>(`/admin/team/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+      invalidateCache("admin:team", "team");
+      return res;
+    },
+    deleteTeamMember: async (token: string, id: number) => {
+      await authFetcher<void>(`/admin/team/${id}`, token, { method: "DELETE" });
+      invalidateCache("admin:team", "team", "admin:stats");
+    },
 
-    getContacts: (token: string) => authFetcher<ContactMessage[]>("/admin/contacts", token),
-    markContactRead: (token: string, id: number) =>
-      authFetcher<ContactMessage>(`/admin/contacts/${id}/read`, token, { method: "PUT" }),
-    deleteContact: (token: string, id: number) =>
-      authFetcher<void>(`/admin/contacts/${id}`, token, { method: "DELETE" }),
+    getContacts: (token: string) =>
+      cached("admin:contacts", () => authFetcher<ContactMessage[]>("/admin/contacts", token), ADMIN_TTL),
+    markContactRead: async (token: string, id: number) => {
+      const res = await authFetcher<ContactMessage>(`/admin/contacts/${id}/read`, token, { method: "PUT" });
+      invalidateCache("admin:contacts", "admin:stats");
+      return res;
+    },
+    deleteContact: async (token: string, id: number) => {
+      await authFetcher<void>(`/admin/contacts/${id}`, token, { method: "DELETE" });
+      invalidateCache("admin:contacts", "admin:stats");
+    },
 
-    getSettings: (token: string) => authFetcher<SiteSetting[]>("/admin/settings", token),
-    updateSetting: (token: string, data: Partial<SiteSetting>) =>
-      authFetcher<SiteSetting>("/admin/settings", token, { method: "PUT", body: JSON.stringify(data) }),
+    getSettings: (token: string) =>
+      cached("admin:settings", () => authFetcher<SiteSetting[]>("/admin/settings", token), ADMIN_TTL),
+    updateSetting: async (token: string, data: Partial<SiteSetting>) => {
+      const res = await authFetcher<SiteSetting>("/admin/settings", token, { method: "PUT", body: JSON.stringify(data) });
+      invalidateCache("admin:settings", "settings");
+      return res;
+    },
 
     uploadImage: async (token: string, file: File): Promise<{ url: string; filename: string }> => {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch(`${API_BASE}/admin/images`, {
+      const formData = new FormData();
+      formData.append("file", file);
+      // Use relative URL so Next.js proxies the request to the backend
+      const res = await fetch(`/api/admin/images`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
-        body: form,
+        body: formData,
       });
-      if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => res.statusText);
+        throw new Error(`Upload failed: ${res.status} — ${errText}`);
+      }
       return res.json();
     },
     deleteImage: (token: string, filename: string) =>
@@ -98,7 +186,16 @@ export const api = {
   },
 };
 
-// Types
+// ─── Prefetch helpers (call on link hover for near-instant navigation) ───────
+export const prefetch = {
+  services:  () => api.getServices().catch(() => {}),
+  projects:  () => api.getProjects().catch(() => {}),
+  blogPosts: () => api.getBlogPosts(0).catch(() => {}),
+  blogPost:  (slug: string) => api.getBlogPost(slug).catch(() => {}),
+  team:      () => api.getTeam().catch(() => {}),
+};
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 export interface Service {
   id: number; title: string; titleAz: string;
   description: string; descriptionAz: string;

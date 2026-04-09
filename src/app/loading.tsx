@@ -7,7 +7,7 @@ export default function Loading() {
           <div className="absolute inset-0 border-2 border-[var(--color-gold)] border-t-transparent rounded-full animate-spin" />
         </div>
         <span className="font-[family-name:var(--font-display)] text-[var(--color-gold)] text-[13px] font-semibold uppercase tracking-[0.12em]">
-          KhanSoft
+          StarSoft
         </span>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "KhanSoft bloqu: web, kibertəhlükəsizlik, avtomatlaşdırma və biznes texnologiyası haqqında praktiki yazılar — sahibkarlar üçün sadə dildə.",
+    "StarSoft bloqu: web, kibertəhlükəsizlik, avtomatlaşdırma və biznes texnologiyası haqqında praktiki yazılar — sahibkarlar üçün sadə dildə.",
   keywords: [
     "web development",
     "kibertəhlükəsizlik",
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
     "Azərbaycan IT",
   ],
   openGraph: {
-    title: "Blog | KhanSoft",
+    title: "Blog | StarSoft",
     description: "Bilik və təcrübə — sahibkarlar üçün praktiki texnoloji yazılar.",
-    url: "https://khansoft.az/blog",
+    url: "https://starsoft.az/blog",
   },
 };
 

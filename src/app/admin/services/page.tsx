@@ -11,6 +11,7 @@ const ICONS_LIST = [
   "Server",
   "Zap",
   "BarChart3",
+  "Bot",
   "Code",
   "Database",
 ];
@@ -34,7 +35,7 @@ export default function AdminServicesPage() {
   const [form, setForm] = useState<Partial<Service>>(emptyForm);
   const [editing, setEditing] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const token = () => localStorage.getItem("khansoft_token") || "";
+  const token = () => localStorage.getItem("starsoft_token") || "";
 
   const load = () => api.admin.getServices(token()).then(setServices).catch(() => {});
   useEffect(() => {

@@ -7,7 +7,7 @@ import { api, ContactMessage } from "@/lib/api";
 export default function AdminContactsPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [selected, setSelected] = useState<ContactMessage | null>(null);
-  const token = () => localStorage.getItem("khansoft_token") || "";
+  const token = () => localStorage.getItem("starsoft_token") || "";
 
   const load = () => api.admin.getContacts(token()).then(setMessages).catch(() => {});
   useEffect(() => {

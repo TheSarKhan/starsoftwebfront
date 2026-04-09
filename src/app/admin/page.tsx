@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("khansoft_token") || "";
+    const token = localStorage.getItem("starsoft_token") || "";
     api.admin.getStats(token)
       .then(setStats)
       .catch(() => {})
@@ -40,7 +40,7 @@ export default function AdminDashboard() {
         <h2 className="font-[family-name:var(--font-display)] text-[28px] font-bold text-ink tracking-[-0.02em]">
           Xoş gəldiniz
         </h2>
-        <p className="text-slate text-[14.5px] mt-1">KhanSoft idarəetmə mərkəzi.</p>
+        <p className="text-slate text-[14.5px] mt-1">StarSoft idarəetmə mərkəzi.</p>
       </div>
 
       {loading ? (

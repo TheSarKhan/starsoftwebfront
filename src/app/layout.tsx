@@ -18,19 +18,19 @@ const inter = Inter({
   display: "swap",
 });
 
-const SITE_URL = "https://khansoft.az";
-const TITLE = "KhanSoft — Biznesinizin texniki tərəfi artıq sizin dərdiniz deyil";
+const SITE_URL = "https://starsoft.az";
+const TITLE = "StarSoft — Biznesinizi parlat, texniki tərəfi bizə burax";
 const DESCRIPTION =
   "Web, mobil, kibertəhlükəsizlik, DevOps, avtomatlaşdırma və biznes analitika — hər layihəyə uyğun mütəxəssislər, sabit qiymətə. Daxili IT komanda saxlamadan, daha az xərclə, daha çox iş.";
 
 export const metadata: Metadata = {
   title: {
     default: TITLE,
-    template: "%s | KhanSoft",
+    template: "%s | StarSoft",
   },
   description: DESCRIPTION,
   keywords: [
-    "KhanSoft",
+    "StarSoft",
     "IT şirkəti Azərbaycan",
     "web development Bakı",
     "mobil tətbiq",
@@ -39,19 +39,19 @@ export const metadata: Metadata = {
     "biznes analitika",
     "avtomatlaşdırma",
     "Azərbaycan IT tərəfdaş",
-    "khansoft.az",
+    "starsoft.az",
   ],
-  authors: [{ name: "KhanSoft", url: SITE_URL }],
-  creator: "KhanSoft",
+  authors: [{ name: "StarSoft", url: SITE_URL }],
+  creator: "StarSoft",
   metadataBase: new URL(SITE_URL),
   openGraph: {
     type: "website",
     locale: "az_AZ",
     url: SITE_URL,
-    siteName: "KhanSoft",
+    siteName: "StarSoft",
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "KhanSoft" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "StarSoft" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "KhanSoft",
+  name: "StarSoft",
   url: SITE_URL,
   logo: `${SITE_URL}/logo.svg`,
   description: DESCRIPTION,

@@ -108,11 +108,21 @@ export default function BlogPage() {
                 <AnimatedSection key={post.id} delay={i * 0.08}>
                   <Link href={`/blog/${post.slug}`}>
                     <article className="card-lift h-full bg-white border border-[var(--color-hairline)] rounded-xl overflow-hidden">
-                      <div className="h-44 bg-gradient-to-br from-[var(--color-gold-soft)] to-white flex items-center justify-center border-b border-[var(--color-hairline)]">
-                        <span className="font-[family-name:var(--font-display)] text-[64px] font-extrabold text-[var(--color-gold)]/30 leading-none">
-                          {post.title[0]}
-                        </span>
-                      </div>
+                      {post.coverImage ? (
+                        <div className="h-44 border-b border-[var(--color-hairline)] overflow-hidden">
+                          <img
+                            src={post.coverImage}
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-44 bg-gradient-to-br from-[var(--color-gold-soft)] to-white flex items-center justify-center border-b border-[var(--color-hairline)]">
+                          <span className="font-[family-name:var(--font-display)] text-[64px] font-extrabold text-[var(--color-gold)]/30 leading-none">
+                            {post.title[0]}
+                          </span>
+                        </div>
+                      )}
                       <div className="p-6">
                         {post.tags && (
                           <div className="flex flex-wrap gap-1.5 mb-3">

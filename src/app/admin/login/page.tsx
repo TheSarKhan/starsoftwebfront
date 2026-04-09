@@ -19,9 +19,9 @@ export default function AdminLoginPage() {
     setError("");
     try {
       const data = await api.login(form);
-      localStorage.setItem("khansoft_token", data.token);
+      localStorage.setItem("starsoft_token", data.token);
       localStorage.setItem(
-        "khansoft_user",
+        "starsoft_user",
         JSON.stringify({ username: data.username, fullName: data.fullName })
       );
       router.push("/admin");
@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
             <BrandMark size={56} radius={12} />
           </div>
           <h1 className="font-[family-name:var(--font-display)] text-[28px] font-bold text-ink tracking-[-0.02em]">
-            KhanSoft Admin
+            StarSoft Admin
           </h1>
           <p className="text-slate text-[14px] mt-2">İdarəetmə panelinə daxil olun</p>
         </div>

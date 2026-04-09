@@ -46,8 +46,8 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="display font-[family-name:var(--font-display)] text-[40px] md:text-[56px] font-extrabold text-ink leading-[1.08] tracking-[-0.025em] mb-6"
           >
-            Bakıdan başlayan{" "}
-            <span className="text-[var(--color-gold)]">bir niyyət</span>.
+            Bakıdan parlayan{" "}
+            <span className="text-[var(--color-gold)]">bir ulduz</span>.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -55,8 +55,8 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-slate text-[18px] md:text-[19px] leading-relaxed"
           >
-            KhanSoft Azərbaycan biznesinə daha az resursla daha çox iş görməyi
-            mümkün etmək üçün quruldu.
+            StarSoft Azərbaycan biznesini texnoloji səviyyədə parlatmaq
+            üçün quruldu — daha az resursla, daha çox iş.
           </motion.p>
         </div>
       </section>
@@ -79,9 +79,10 @@ export default function AboutPage() {
                 Sözündə duran. Layihəni başa çatdıran. Sonra da yanında qalan.
               </p>
               <p className="text-ink text-[18px] leading-[1.75] mb-6">
-                KhanSoft bu boşluğu doldurmaq üçün Bakıda quruldu. Adımız
-                tarixi &ldquo;xan&rdquo; sözündən gəlir — gücü, nüfuzu və
-                qətiyyəti təmsil edir. Əsas vədimiz isə sadədir:{" "}
+                StarSoft bu boşluğu doldurmaq üçün Bakıda quruldu. Adımızdakı
+                &ldquo;star&rdquo; — loqomizdəki 8-guşəli ulduz kimi,
+                hər node bir texnologiya sahəsini, mərkəz isə sizin biznesinizi
+                təmsil edir. Əsas vədimiz sadədir:{" "}
                 <span className="text-[var(--color-gold)] font-semibold">
                   daha az resursla, daha çox iş.
                 </span>
@@ -173,7 +174,7 @@ export default function AboutPage() {
               <p className="text-slate text-[17px] leading-relaxed mb-6">
                 Müasir imtahan və test platforması — sıfırdan qurulub,
                 davamlı dəstəklənir. Fikirdən canlı məhsula, sabit qiymətlə
-                — KhanSoft yanaşmasının real nümunəsi.
+                — StarSoft yanaşmasının real nümunəsi.
               </p>
               <a
                 href="https://testup.az"

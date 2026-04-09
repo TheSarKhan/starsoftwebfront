@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "KhanSoft — Azərbaycan biznesinin rəqəmsal xanlığı";
+export const alt = "StarSoft — Biznesinizin texniki tərəfi artıq sizin dərdiniz deyil";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -35,29 +35,23 @@ export default async function OgImage() {
             }}
           >
             <svg width="80" height="80" viewBox="0 0 32 32" fill="none">
-              <rect x="8" y="2" width="2" height="3" fill="#FFFFFF" />
-              <rect x="14" y="2" width="2" height="3" fill="#FFFFFF" />
-              <rect x="20" y="2" width="2" height="3" fill="#FFFFFF" />
-              <rect x="8" y="27" width="2" height="3" fill="#FFFFFF" />
-              <rect x="14" y="27" width="2" height="3" fill="#FFFFFF" />
-              <rect x="20" y="27" width="2" height="3" fill="#FFFFFF" />
-              <rect x="2" y="8" width="3" height="2" fill="#FFFFFF" />
-              <rect x="2" y="14" width="3" height="2" fill="#FFFFFF" />
-              <rect x="2" y="20" width="3" height="2" fill="#FFFFFF" />
-              <rect x="27" y="8" width="3" height="2" fill="#FFFFFF" />
-              <rect x="27" y="14" width="3" height="2" fill="#FFFFFF" />
-              <rect x="27" y="20" width="3" height="2" fill="#FFFFFF" />
-              <rect x="5" y="5" width="22" height="22" rx="2.5" stroke="#FFFFFF" strokeWidth="2" />
-              <path
-                d="M16 8 L23 10 L23 15 Q23 21 16 24 Q9 21 9 15 L9 10 Z"
-                fill="#FFFFFF"
-                stroke="#FFFFFF"
-                strokeWidth="1.6"
-                strokeLinejoin="round"
-              />
-              <rect x="13.2" y="13" width="1.6" height="9" fill="#B8893A" />
-              <path d="M14.8 17.5 L19 13" stroke="#B8893A" strokeWidth="1.6" strokeLinecap="round" />
-              <path d="M14.8 17.5 L19 22" stroke="#B8893A" strokeWidth="1.6" strokeLinecap="round" />
+              <line x1="16" y1="5" x2="23.778" y2="23.778" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="23.778" y1="8.222" x2="16" y2="27" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="27" y1="16" x2="8.222" y2="23.778" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="23.778" y1="23.778" x2="5" y2="16" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="16" y1="27" x2="8.222" y2="8.222" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="8.222" y1="23.778" x2="16" y2="5" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="5" y1="16" x2="23.778" y2="8.222" stroke="#FFFFFF" strokeWidth="1.3" />
+              <line x1="8.222" y1="8.222" x2="27" y2="16" stroke="#FFFFFF" strokeWidth="1.3" />
+              <circle cx="16" cy="5" r="1.6" fill="#FFFFFF" />
+              <circle cx="23.778" cy="8.222" r="1.6" fill="#FFFFFF" />
+              <circle cx="27" cy="16" r="1.6" fill="#FFFFFF" />
+              <circle cx="23.778" cy="23.778" r="1.6" fill="#FFFFFF" />
+              <circle cx="16" cy="27" r="1.6" fill="#FFFFFF" />
+              <circle cx="8.222" cy="23.778" r="1.6" fill="#FFFFFF" />
+              <circle cx="5" cy="16" r="1.6" fill="#FFFFFF" />
+              <circle cx="8.222" cy="8.222" r="1.6" fill="#FFFFFF" />
+              <circle cx="16" cy="16" r="2" fill="#FFFFFF" />
             </svg>
           </div>
           <div
@@ -68,7 +62,7 @@ export default async function OgImage() {
               letterSpacing: "-0.02em",
             }}
           >
-            KhanSoft
+            StarSoft
           </div>
         </div>
 
@@ -84,8 +78,8 @@ export default async function OgImage() {
               maxWidth: "900px",
             }}
           >
-            Biznesinizin texniki tərəfi{" "}
-            <span style={{ color: "#B8893A" }}>artıq sizin dərdiniz deyil</span>.
+            Texnologiyanızı{" "}
+            <span style={{ color: "#B8893A" }}>ulduzlara çatdırırıq</span>.
           </div>
           <div
             style={{
@@ -117,7 +111,7 @@ export default async function OgImage() {
               fontWeight: 600,
             }}
           >
-            khansoft.az
+            starsoft.az
           </div>
           <div
             style={{
@@ -128,7 +122,7 @@ export default async function OgImage() {
               letterSpacing: "0.12em",
             }}
           >
-            Daha az resursla, daha çox iş
+            Biznesinizi parlat, texniki tərəfi bizə burax
           </div>
         </div>
       </div>

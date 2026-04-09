@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
-  /* ─── KhanSoft Brand v1.1 — Light + Modern ─── */
+  /* ─── StarSoft Brand v2.0 — Light + Modern ─── */
 
   /* Surfaces */
   --color-canvas:        #FAFAF7;   /* page background */

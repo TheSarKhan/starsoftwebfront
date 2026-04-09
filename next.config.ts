@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "khansoft.az" },
       { protocol: "https", hostname: "www.khansoft.az" },
+      { protocol: "https", hostname: "starsoft.az" },
+      { protocol: "https", hostname: "www.starsoft.az" },
     ],
   },
 
@@ -20,6 +22,10 @@ const nextConfig: NextConfig = {
       {
         source: "/api/:path*",
         destination: `${apiBackend}/api/:path*`,
+      },
+      {
+        source: "/images/:path*",
+        destination: `${apiBackend}/images/:path*`,
       },
     ];
   },

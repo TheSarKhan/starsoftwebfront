@@ -7,7 +7,7 @@ import { api, SiteSetting } from "@/lib/api";
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<SiteSetting[]>([]);
   const [saved, setSaved] = useState(false);
-  const token = () => localStorage.getItem("khansoft_token") || "";
+  const token = () => localStorage.getItem("starsoft_token") || "";
 
   useEffect(() => {
     api.admin.getSettings(token()).then(setSettings).catch(() => {});
