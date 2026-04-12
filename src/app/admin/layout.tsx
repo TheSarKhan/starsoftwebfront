@@ -13,6 +13,7 @@ import {
   LogOut,
 } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
+import { api } from "@/lib/api";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
