@@ -10,8 +10,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "http", hostname: "localhost" },
-      { protocol: "https", hostname: "khansoft.az" },
-      { protocol: "https", hostname: "www.khansoft.az" },
+      { protocol: "https", hostname: "starsoft.az" },
+      { protocol: "https", hostname: "www.starsoft.az" },
       { protocol: "https", hostname: "starsoft.az" },
       { protocol: "https", hostname: "www.starsoft.az" },
     ],

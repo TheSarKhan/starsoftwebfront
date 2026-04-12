@@ -1,58 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Clock, MessageCircle, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react";
-import AnimatedSection from "@/components/AnimatedSection";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import GoldButton from "@/components/GoldButton";
 import { api } from "@/lib/api";
 
-const contactInfo = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "sarxanbabayevcontact@gmail.com",
-    href: "mailto:sarxanbabayevcontact@gmail.com",
-  },
-  {
-    icon: Phone,
-    label: "Telefon",
-    value: "+994 50 201 71 64",
-    href: "tel:+994502017164",
-  },
-  {
-    icon: MessageCircle,
-    label: "WhatsApp",
-    value: "+994 50 201 71 64",
-    href: "https://wa.me/994502017164",
-  },
-  {
-    icon: MapPin,
-    label: "Ünvan",
-    value: "Bakı, Azərbaycan",
-    href: null,
-  },
-  {
-    icon: Clock,
-    label: "İş saatları",
-    value: "B.e – Cümə, 09:00 – 18:00",
-    href: null,
-  },
+const contactRows = [
+  { label: "E-poçt",        value: "sarxanbabayevcontact@gmail.com", href: "mailto:sarxanbabayevcontact@gmail.com" },
+  { label: "Telefon",       value: "+994 50 201 71 64",              href: "tel:+994502017164" },
+  { label: "WhatsApp",      value: "+994 50 201 71 64",              href: "https://wa.me/994502017164" },
+  { label: "Ünvan",         value: "Bakı, Azərbaycan",              href: null },
+  { label: "İş saatları",  value: "B.e – Cümə, 09:00 – 18:00",    href: null },
 ];
 
 const inputCls =
-  "w-full px-4 py-3 bg-white border border-[var(--color-hairline-strong)] rounded-lg text-ink placeholder-mist-slate text-[15px] focus:outline-none focus:border-[var(--color-gold)] focus:ring-3 focus:ring-[var(--color-gold-soft)] transition-all duration-200";
+  "w-full px-4 py-3 bg-white border border-[var(--color-hairline-strong)] text-[var(--color-ink)] placeholder-[var(--color-mist-slate)] text-[15px] focus:outline-none focus:border-[var(--color-gold)] focus:ring-3 focus:ring-[var(--color-gold-soft)] transition-all duration-200 rounded-lg";
 
-const labelCls = "block text-[13px] font-medium text-slate mb-1.5";
+const labelCls = "block text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--color-slate)] mb-2";
 
 export default function ContactPage() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -75,132 +43,131 @@ export default function ContactPage() {
   };
 
   return (
-    <>
-      {/* ═══ HERO ═══ */}
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden">
-        <div className="absolute inset-0 hero-glow pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-4 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--color-gold)] mb-5"
-          >
-            Əlaqə
-          </motion.span>
+    <div className="pt-16">
+
+      {/* ── Hero: split layout ── */}
+      <section className="border-b border-[var(--color-hairline)] grid md:grid-cols-[1fr_1px_400px] lg:grid-cols-[1fr_1px_460px]">
+        <div className="px-6 md:px-12 py-14 md:py-24">
           <motion.h1
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="display font-[family-name:var(--font-display)] text-[40px] md:text-[56px] font-extrabold text-ink leading-[1.08] tracking-[-0.025em] mb-6"
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-[family-name:var(--font-display)] text-[52px] md:text-[72px] lg:text-[88px] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.035em]"
           >
-            Gəlin layihənizi müzakirə edək.
+            Layihənizi<br />
+            <em className="not-italic text-[var(--color-gold)]">müzakirə</em><br />
+            edək.
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-slate text-[18px] md:text-[19px] leading-relaxed"
-          >
-            Pulsuz, öhdəliksiz. Eyni iş günü cavab. Forma doldurun,
-            zəng vurun və ya WhatsApp ilə yazın — necə rahatdırsa.
-          </motion.p>
+        </div>
+
+        <div className="hidden md:block bg-[var(--color-hairline)]" />
+
+        <div className="hidden md:flex px-10 lg:px-12 flex-col justify-center gap-5">
+          {[
+            { n: "01", text: "Eyni iş günü cavab veririk." },
+            { n: "02", text: "Konkret plan və sabit qiymət təklif edirik." },
+            { n: "03", text: "Konsultasiya tamamilə pulsuzdur." },
+          ].map(({ n, text }, i) => (
+            <motion.div
+              key={n}
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 + i * 0.1 }}
+              className="flex items-start gap-4"
+            >
+              <span className="font-mono text-[11px] text-[var(--color-slate)]/40 pt-1 flex-shrink-0">{n}</span>
+              <p className="text-[16px] text-[var(--color-ink)] font-medium leading-snug">{text}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* ═══ CONTENT ═══ */}
-      <section className="pb-24 md:pb-32">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
-            {/* Contact info */}
-            <AnimatedSection className="lg:col-span-2">
-              <h2 className="font-[family-name:var(--font-display)] text-[22px] font-bold text-ink mb-6 tracking-[-0.01em]">
-                Birbaşa əlaqə
-              </h2>
-              <ul className="space-y-4">
-                {contactInfo.map((item) => {
-                  const Icon = item.icon;
-                  const content = (
-                    <div className="flex items-start gap-4 p-4 bg-white border border-[var(--color-hairline)] rounded-xl card-lift">
-                      <div className="w-10 h-10 rounded-lg bg-[var(--color-gold-soft)] flex items-center justify-center flex-shrink-0">
-                        <Icon size={18} strokeWidth={1.75} className="text-[var(--color-gold)]" />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-[12px] font-semibold uppercase tracking-[0.1em] text-mist-slate mb-0.5">
-                          {item.label}
-                        </div>
-                        <div className="text-ink text-[15px] font-medium break-all">
-                          {item.value}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                  return (
-                    <li key={item.label}>
-                      {item.href ? (
-                        <a
-                          href={item.href}
-                          target={item.href.startsWith("http") ? "_blank" : undefined}
-                          rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        >
-                          {content}
-                        </a>
-                      ) : (
-                        content
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            </AnimatedSection>
+      {/* ── Main: contact info + form ── */}
+      <section className="grid md:grid-cols-[320px_1px_1fr] lg:grid-cols-[360px_1px_1fr] min-h-[520px]">
 
-            {/* Form */}
-            <AnimatedSection className="lg:col-span-3" delay={0.1}>
-              <div className="bg-white border border-[var(--color-hairline)] rounded-2xl p-8 md:p-10">
-                <h2 className="font-[family-name:var(--font-display)] text-[22px] font-bold text-ink mb-2 tracking-[-0.01em]">
-                  Layihənizi təsvir edin
-                </h2>
-                <p className="text-slate text-[14.5px] mb-4">
-                  Qısa məlumat verin — eyni iş günü konkret plan və qiymət təklifi alacaqsınız.
+        {/* Left: contact info rows */}
+        <div>
+          {contactRows.map(({ label, value, href }, i) => {
+            const inner = (
+              <div className="px-6 md:px-10 py-6 border-b border-[var(--color-hairline)] last:border-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-slate)] mb-1.5">
+                  {label}
                 </p>
-                <div className="flex flex-wrap gap-4 mb-6 text-[13px] text-slate">
-                  {[
-                    { icon: Clock, text: "Eyni gün cavab" },
-                    { icon: CheckCircle2, text: "Öhdəlik yoxdur" },
-                    { icon: ShieldCheck, text: "Məlumatınız qorunur" },
-                  ].map((t) => {
-                    const TIcon = t.icon;
-                    return (
-                      <span key={t.text} className="flex items-center gap-1.5">
-                        <TIcon size={14} strokeWidth={2} className="text-[var(--color-gold)]" />
-                        {t.text}
-                      </span>
-                    );
-                  })}
-                </div>
-
-                {status === "success" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 text-green-800 flex items-start gap-3"
+                <p className={`text-[15px] font-medium leading-snug ${href ? "text-[var(--color-ink)] hover:text-[var(--color-gold)] transition-colors" : "text-[var(--color-ink)]"}`}>
+                  {value}
+                </p>
+              </div>
+            );
+            return (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+              >
+                {href ? (
+                  <a
+                    href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                   >
-                    <CheckCircle2 size={18} strokeWidth={2} className="mt-0.5 flex-shrink-0" />
-                    <div className="text-[14.5px]">
-                      Mesajınız uğurla göndərildi. Eyni iş günü cavab veririk.
-                    </div>
-                  </motion.div>
+                    {inner}
+                  </a>
+                ) : (
+                  inner
                 )}
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Vertical rule */}
+        <div className="hidden md:block bg-[var(--color-hairline)]" />
+
+        {/* Right: form */}
+        <div className="px-6 md:px-10 lg:px-14 py-10">
+          <AnimatePresence mode="wait">
+
+            {/* Success state */}
+            {status === "success" && (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className="h-full flex flex-col justify-center py-12"
+              >
+                <div className="w-12 h-12 rounded-full bg-[var(--color-gold-soft)] flex items-center justify-center mb-8">
+                  <CheckCircle2 size={22} strokeWidth={2} className="text-[var(--color-gold)]" />
+                </div>
+                <h2 className="font-[family-name:var(--font-display)] text-[32px] md:text-[44px] font-bold text-[var(--color-ink)] leading-[1.1] tracking-[-0.025em] mb-4">
+                  Mesajınız çatdı.
+                </h2>
+                <p className="text-[16px] text-[var(--color-slate)] leading-relaxed max-w-sm">
+                  Eyni iş günü sizinlə əlaqə saxlayacağıq — konkret plan
+                  və qiymət təklifi ilə.
+                </p>
+              </motion.div>
+            )}
+
+            {/* Form state */}
+            {status !== "success" && (
+              <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+
+                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)] mb-8">
+                  Layihənizi təsvir edin
+                </p>
 
                 {status === "error" && (
-                  <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-800 flex items-start gap-3">
-                    <AlertCircle size={18} strokeWidth={2} className="mt-0.5 flex-shrink-0" />
-                    <div className="text-[14.5px]">{errorMsg}</div>
+                  <div className="mb-6 flex items-start gap-3 text-[14px] text-[var(--color-error)]">
+                    <AlertCircle size={16} strokeWidth={2} className="flex-shrink-0 mt-0.5" />
+                    <span>{errorMsg}</span>
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className={labelCls}>Ad Soyad *</label>
                       <input
@@ -225,7 +192,7 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className={labelCls}>Telefon</label>
                       <input
@@ -261,25 +228,26 @@ export default function ContactPage() {
                     />
                   </div>
 
-                  <div className="pt-2">
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center gap-5">
                     <GoldButton
                       type="submit"
                       size="lg"
                       withArrow
-                      className="w-full justify-center"
                     >
-                      {status === "loading" ? "Göndərilir..." : "Pulsuz konsultasiya üçün göndərin"}
+                      {status === "loading" ? "Göndərilir..." : "Göndərin"}
                     </GoldButton>
-                    <p className="text-mist-slate text-[12.5px] mt-3 text-center">
-                      Məlumatlarınız təhlükəsiz şəkildə qorunur və üçüncü tərəflə paylaşılmır.
+                    <p className="text-[12px] text-[var(--color-mist-slate)]">
+                      Məlumatlarınız təhlükəsiz qorunur.
                     </p>
                   </div>
                 </form>
-              </div>
-            </AnimatedSection>
-          </div>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
         </div>
       </section>
-    </>
+
+    </div>
   );
 }

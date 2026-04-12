@@ -37,6 +37,8 @@
 
 html {
   scroll-behavior: smooth;
+  background-color: #FAFAF7;
+  color-scheme: light;
 }
 
 body {
@@ -104,4 +106,35 @@ a {
     linear-gradient(rgba(15, 20, 25, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 20, 25, 0.04) 1px, transparent 1px);
   background-size: 56px 56px;
+}
+
+/* ── Homepage horizontal scroll ── */
+@media (min-width: 768px) {
+  .h-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: calc(100vh - 4rem);   /* 4rem = 64px navbar */
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    background-color: #FAFAF7;
+  }
+  .h-scroll-container::-webkit-scrollbar { display: none; }
+
+  .h-slide {
+    min-width: 100vw;
+    width: 100vw;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    height: 100%;
+    overflow: hidden;
+    background-color: #FAFAF7;
+  }
+}
+
+/* Mobile: normal vertical stack */
+@media (max-width: 767px) {
+  .h-slide { padding-bottom: 3rem; }
+  .h-slide:first-child { padding-top: 5rem; }   /* clearfix for fixed navbar */
 }

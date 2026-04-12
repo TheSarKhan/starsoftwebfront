@@ -15,12 +15,14 @@ const sections = [
   {
     title: "Xidmətlər",
     links: [
-      { label: "Web development", href: "/services#web" },
+      { label: "Vebsayt", href: "/services#web" },
       { label: "Mobil tətbiq", href: "/services#mobile" },
       { label: "Kibertəhlükəsizlik", href: "/services#security" },
       { label: "İnfrastruktur", href: "/services#devops" },
       { label: "Avtomatlaşdırma", href: "/services#automation" },
       { label: "Biznes analitika", href: "/services#analytics" },
+      { label: "Telegram botlar", href: "/services#telegram" },
+      { label: "Chrome extensions", href: "/services#extension" },
     ],
   },
 ];

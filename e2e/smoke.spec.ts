@@ -80,7 +80,7 @@ test.describe("SEO surface", () => {
     expect(ldJson).toBeTruthy();
     const data = JSON.parse(ldJson!);
     expect(data["@type"]).toBe("Organization");
-    expect(data.name).toBe("KhanSoft");
+    expect(data.name).toBe("StarSoft");
   });
 
   test("/robots.txt is served and disallows admin", async ({ request }) => {
@@ -95,7 +95,7 @@ test.describe("SEO surface", () => {
     expect(res.ok()).toBeTruthy();
     const body = await res.text();
     for (const path of ["/services", "/contact", "/about"]) {
-      expect(body).toContain(`https://khansoft.az${path}`);
+      expect(body).toContain(`https://starsoft.az${path}`);
     }
   });
 });

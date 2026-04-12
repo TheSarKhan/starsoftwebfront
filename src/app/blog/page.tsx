@@ -3,10 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import AnimatedSection from "@/components/AnimatedSection";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import GoldButton from "@/components/GoldButton";
 import { api, BlogPost } from "@/lib/api";
+
+const upcomingTopics = [
+  "Biznesiniz üçün sayt nəyə lazımdır və nə qədər başa gəlir?",
+  "Kibertəhlükəsizlik — kiçik biznes üçün nəyə diqqət etməli?",
+  "Avtomatlaşdırma ilə həftədə 20+ saat necə qazanılır?",
+];
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -27,154 +32,202 @@ export default function BlogPage() {
   }, [page]);
 
   return (
-    <>
-      {/* ═══ HERO ═══ */}
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden">
-        <div className="absolute inset-0 hero-glow pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-4 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--color-gold)] mb-5"
-          >
-            Blog
-          </motion.span>
+    <div className="pt-16">
+
+
+      {/* ── Hero: split layout ── */}
+      <section className="border-b border-[var(--color-hairline)] grid md:grid-cols-[1fr_1px_400px] lg:grid-cols-[1fr_1px_460px]">
+        <div className="px-6 md:px-12 py-14 md:py-24">
           <motion.h1
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="display font-[family-name:var(--font-display)] text-[40px] md:text-[56px] font-extrabold text-ink leading-[1.08] tracking-[-0.025em] mb-6"
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-[family-name:var(--font-display)] text-[52px] md:text-[72px] lg:text-[88px] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.035em]"
           >
-            Bilik və{" "}
-            <span className="text-[var(--color-gold)]">praktik təcrübə</span>.
+            Bilik və<br />
+            <em className="not-italic text-[var(--color-gold)]">praktik</em><br />
+            təcrübə.
           </motion.h1>
+        </div>
+
+        <div className="hidden md:block bg-[var(--color-hairline)]" />
+
+        <div className="hidden md:flex px-10 lg:px-12 flex-col justify-center">
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-slate text-[18px] md:text-[19px] leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-[16px] text-[var(--color-slate)] leading-relaxed"
           >
-            Azərbaycan sahibkarları üçün sadə dildə — web, kibertəhlükəsizlik,
-            avtomatlaşdırma və texnologiya qərarları haqqında praktiki yazılar.
+            Sadə dildə — web, kibertəhlükəsizlik, avtomatlaşdırma
+            və texnologiya qərarları haqqında praktiki yazılar.
           </motion.p>
         </div>
       </section>
 
-      {/* ═══ POSTS ═══ */}
-      <section className="pb-24 md:pb-32">
-        <div className="max-w-6xl mx-auto px-4">
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="h-72 bg-white border border-[var(--color-hairline)] rounded-xl animate-pulse"
-                />
-              ))}
+      {/* ── Posts ── */}
+      <section>
+
+        {/* Loading */}
+        {loading && (
+          <div className="px-6 md:px-12 py-16">
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-[11px] text-[var(--color-slate)]/40">—</span>
+              <span className="text-[16px] text-[var(--color-slate)]">Yazılar yüklənir...</span>
             </div>
-          ) : posts.length === 0 ? (
-            <AnimatedSection>
-              <div className="max-w-2xl mx-auto bg-white border border-[var(--color-hairline)] rounded-2xl p-12 text-center">
-                <h3 className="font-[family-name:var(--font-display)] text-[24px] font-bold text-ink mb-3 tracking-[-0.01em]">
-                  İlk yazılar hazırlanır
-                </h3>
-                <p className="text-slate text-[16px] leading-relaxed mb-4">
-                  Tezliklə bu mövzularda praktiki yazılarla qayıdacağıq:
-                </p>
-                <ul className="text-left max-w-sm mx-auto space-y-2 mb-8">
-                  {[
-                    "Biznesiniz üçün sayt nəyə lazımdır və nə qədər başa gəlir?",
-                    "Kibertəhlükəsizlik — kiçik biznes üçün nəyə diqqət etməli?",
-                    "Avtomatlaşdırma ilə həftədə 20+ saat necə qazanılır?",
-                  ].map((topic) => (
-                    <li key={topic} className="flex items-start gap-2 text-[15px] text-slate">
-                      <ArrowRight size={14} strokeWidth={2} className="text-[var(--color-gold)] mt-1 flex-shrink-0" />
-                      <span>{topic}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-slate text-[14px] mb-6">
-                  Bu arada konkret sualınız varsa, birbaşa soruşun — cavab verməkdən məmnun olarıq.
-                </p>
-                <GoldButton href="/contact" variant="secondary" withArrow>
-                  Sualınızı göndərin
-                </GoldButton>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && posts.length === 0 && (
+          <div className="px-6 md:px-12 py-16 md:py-24 grid md:grid-cols-[1fr_1px_400px] gap-0">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)] mb-8">
+                Tezliklə bu mövzularda
+              </p>
+              <div className="space-y-0">
+                {upcomingTopics.map((topic, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-6 py-6 border-b border-[var(--color-hairline)] last:border-0"
+                  >
+                    <span className="font-mono text-[11px] text-[var(--color-slate)]/40 pt-1 flex-shrink-0">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="text-[17px] text-[var(--color-ink)] leading-snug font-medium">
+                      {topic}
+                    </p>
+                  </div>
+                ))}
               </div>
-            </AnimatedSection>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post, i) => (
-                <AnimatedSection key={post.id} delay={i * 0.08}>
-                  <Link href={`/blog/${post.slug}`}>
-                    <article className="card-lift h-full bg-white border border-[var(--color-hairline)] rounded-xl overflow-hidden">
-                      {post.coverImage ? (
-                        <div className="h-44 border-b border-[var(--color-hairline)] overflow-hidden">
-                          <img
-                            src={post.coverImage}
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="h-44 bg-gradient-to-br from-[var(--color-gold-soft)] to-white flex items-center justify-center border-b border-[var(--color-hairline)]">
-                          <span className="font-[family-name:var(--font-display)] text-[64px] font-extrabold text-[var(--color-gold)]/30 leading-none">
-                            {post.title[0]}
-                          </span>
-                        </div>
-                      )}
-                      <div className="p-6">
-                        {post.tags && (
+            </div>
+
+            <div className="hidden md:block bg-[var(--color-hairline)] mx-12" />
+
+            <div className="hidden md:flex flex-col justify-center">
+              <p className="text-[16px] text-[var(--color-slate)] leading-relaxed mb-8">
+                Konkret sualınız varsa, birbaşa soruşun — cavab verməkdən məmnun olarıq.
+              </p>
+              <GoldButton href="/contact" variant="secondary" withArrow>
+                Sualınızı göndərin
+              </GoldButton>
+            </div>
+          </div>
+        )}
+
+        {/* Post list */}
+        {!loading && posts.length > 0 && (
+          <div className="divide-y divide-[var(--color-hairline)]">
+            {posts.map((post, i) => {
+              const tags = post.tags ? post.tags.split(",").map((t) => t.trim()).filter(Boolean) : [];
+              const date = post.publishedAt
+                ? (() => { const d = new Date(post.publishedAt); return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`; })()
+                : "";
+
+              return (
+                <motion.div
+                  key={post.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.5, delay: 0.04 * (i % 10) }}
+                >
+                  <Link href={`/blog/${post.slug}`} className="group block">
+                    <article className="grid grid-cols-[40px_1fr] md:grid-cols-[64px_1fr_180px] gap-x-6 gap-y-2 px-6 md:px-12 py-8 hover:bg-[var(--color-mist)] transition-colors duration-150">
+
+                      {/* Number */}
+                      <span className="font-mono text-[11px] text-[var(--color-slate)]/40 pt-2 md:pt-3">
+                        {String(page * 10 + i + 1).padStart(2, "0")}
+                      </span>
+
+                      {/* Content */}
+                      <div className="min-w-0">
+                        {tags.length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mb-3">
-                            {post.tags.split(",").slice(0, 2).map((tag) => (
+                            {tags.slice(0, 3).map((tag) => (
                               <span
                                 key={tag}
-                                className="px-2 py-0.5 rounded-md bg-mist text-slate text-[11px] font-medium"
+                                className="px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-slate)] border border-[var(--color-hairline)] rounded-full"
                               >
-                                {tag.trim()}
+                                {tag}
                               </span>
                             ))}
                           </div>
                         )}
-                        <h3 className="font-[family-name:var(--font-display)] text-[18px] font-bold text-ink mb-2 tracking-[-0.01em] line-clamp-2">
+                        <h2 className="font-[family-name:var(--font-display)] text-[20px] md:text-[24px] font-bold text-[var(--color-ink)] leading-[1.15] tracking-[-0.015em] mb-2 group-hover:text-[var(--color-gold)] transition-colors">
                           {post.title}
-                        </h3>
-                        <p className="text-slate text-[14px] leading-relaxed line-clamp-2 mb-4">
+                        </h2>
+                        <p className="text-[15px] text-[var(--color-slate)] leading-relaxed line-clamp-2">
                           {post.summary}
                         </p>
-                        <div className="flex items-center justify-between text-[12px] text-mist-slate pt-3 border-t border-[var(--color-hairline)]">
-                          <span>{post.author}</span>
-                          <span className="inline-flex items-center gap-1 text-[var(--color-gold)] font-semibold">
-                            Oxu <ArrowRight size={12} strokeWidth={2.5} />
-                          </span>
-                        </div>
                       </div>
+
+                      {/* Meta */}
+                      <div className="hidden md:flex flex-col items-end justify-between pl-4">
+                        <div className="text-right">
+                          {date && (
+                            <p className="text-[12px] text-[var(--color-slate)] mb-1">{date}</p>
+                          )}
+                          <p className="text-[12px] text-[var(--color-slate)]">{post.author}</p>
+                        </div>
+                        <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--color-gold)] group-hover:gap-2 transition-all">
+                          Oxu <ArrowUpRight size={13} strokeWidth={2} />
+                        </span>
+                      </div>
+
+                      {/* Mobile read link */}
+                      <div className="col-start-2 md:hidden mt-2">
+                        <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--color-gold)]">
+                          Oxu <ArrowUpRight size={12} strokeWidth={2} />
+                        </span>
+                      </div>
+
                     </article>
                   </Link>
-                </AnimatedSection>
-              ))}
-            </div>
-          )}
-
-          {totalPages > 1 && (
-            <div className="flex justify-center gap-2 mt-12">
-              {Array.from({ length: totalPages }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i)}
-                  className={`w-10 h-10 rounded-lg text-[14px] font-semibold transition-all ${
-                    page === i
-                      ? "bg-[var(--color-gold)] text-white"
-                      : "border border-[var(--color-hairline-strong)] text-slate hover:border-[var(--color-gold)] hover:text-[var(--color-gold)]"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </section>
-    </>
+
+      {/* ── Pagination ── */}
+      {totalPages > 1 && (
+        <div className="px-6 md:px-12 py-10 border-t border-[var(--color-hairline)] flex items-center justify-between">
+          <button
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-slate)] hover:text-[var(--color-ink)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft size={16} strokeWidth={2} />
+            Əvvəlki
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  page === i
+                    ? "w-8 bg-[var(--color-gold)]"
+                    : "w-2 bg-[var(--color-hairline-strong)] hover:bg-[var(--color-slate)]"
+                }`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1}
+            className="inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--color-slate)] hover:text-[var(--color-ink)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            Növbəti
+            <ChevronRight size={16} strokeWidth={2} />
+          </button>
+        </div>
+      )}
+
+    </div>
   );
 }

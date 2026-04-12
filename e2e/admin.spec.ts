@@ -13,7 +13,7 @@ import { test, expect } from "@playwright/test";
 test.describe("admin gate", () => {
   test("login page renders", async ({ page }) => {
     await page.goto("/admin/login");
-    await expect(page.getByRole("heading", { name: /khansoft admin/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /starsoft admin/i })).toBeVisible();
     await expect(page.getByPlaceholder("admin")).toBeVisible();
     await expect(page.getByRole("button", { name: /daxil ol/i })).toBeVisible();
   });

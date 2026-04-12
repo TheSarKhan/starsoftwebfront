@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Xidmətlər",
   description:
-    "StarSoft xidmətləri: Web development, Mobil tətbiq, Kibertəhlükəsizlik, İnfrastruktur, Avtomatlaşdırma, Biznes analitika, Telegram botlar. Bir tərəfdaş, yeddi sahə, sabit qiymət.",
+    "StarSoft xidmətləri: Vebsayt, Mobil tətbiq, Kibertəhlükəsizlik, İnfrastruktur, Avtomatlaşdırma, Biznes analitika, Telegram botlar, Chrome extensions. Bir tərəfdaş, səkkiz sahə, sabit qiymət.",
   keywords: [
     "web development",
     "mobil tətbiq",
@@ -29,7 +29,7 @@ const servicesJsonLd = {
     {
       "@type": "Service",
       position: 1,
-      name: "Web development",
+      name: "Vebsayt",
       description: "Sürətli, SEO dostu və konversiyaya hesablanmış müasir veb saytlar və veb tətbiqlər.",
       provider: { "@type": "Organization", name: "StarSoft" },
       areaServed: "AZ",
@@ -79,6 +79,14 @@ const servicesJsonLd = {
       position: 7,
       name: "Telegram botlar",
       description: "Sifariş qəbulu, müştəri dəstəyi, bildirişlər və biznes avtomatlaşdırması üçün Telegram botlar.",
+      provider: { "@type": "Organization", name: "StarSoft" },
+      areaServed: "AZ",
+    },
+    {
+      "@type": "Service",
+      position: 8,
+      name: "Chrome extensions",
+      description: "Brauzer üzərindən iş axınını sürətləndirin — xüsusi Chrome extension ilə.",
       provider: { "@type": "Organization", name: "StarSoft" },
       areaServed: "AZ",
     },

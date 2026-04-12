@@ -1,26 +1,19 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
-  Globe,
-  Smartphone,
-  ShieldCheck,
-  Server,
-  Zap,
-  BarChart3,
-  Bot,
-  ArrowRight,
-  Check,
+  Globe, Smartphone, ShieldCheck, Server,
+  Zap, BarChart3, Bot, ArrowUpRight, Check, Puzzle,
 } from "lucide-react";
-import AnimatedSection from "@/components/AnimatedSection";
 import GoldButton from "@/components/GoldButton";
 
 const services = [
   {
     id: "web",
     icon: Globe,
-    title: "Web development",
+    title: "Vebsayt",
     tagline: "Sürətli, SEO dostu, konversiyaya hesablanmış veb həllər.",
     description:
       "Korporativ saytdan mürəkkəb veb tətbiqə qədər — biznesinizi onlayn təmsil edən və müştəri qazandıran həllər qururuq.",
@@ -36,7 +29,7 @@ const services = [
     id: "mobile",
     icon: Smartphone,
     title: "Mobil tətbiq",
-    tagline: "iOS və Android üçün eyni keyfiyyətdə işləyən mobil tətbiqlər.",
+    tagline: "iOS və Android üçün eyni keyfiyyətdə işləyən tətbiqlər.",
     description:
       "Bir layihə ilə həm iOS, həm Android — daha az xərc, daha sürətli buraxılış. Müştəri loyallığını cibə daşıyın.",
     deliverables: [
@@ -53,11 +46,11 @@ const services = [
     title: "Kibertəhlükəsizlik",
     tagline: "Audit, penetrasiya testi və davamlı qoruma.",
     description:
-      "Bir hack hadisəsi biznesin reputasiyasını və müştəri etibarını məhv edə bilər. Sistemlərinizi proaktiv olaraq qoruyuruq.",
+      "Bir hack hadisəsi biznesin reputasiyasını məhv edə bilər. Sistemlərinizi proaktiv olaraq qoruyuruq.",
     deliverables: [
       "Tam təhlükəsizlik auditi və hesabat",
       "Penetrasiya testi (web, mobil, infrastruktur)",
-      "Məlum təhlükəsizlik boşluqlarının aradan qaldırılması",
+      "Boşluqların aradan qaldırılması",
       "Davamlı monitorinq və xəbərdarlıq sistemi",
       "Komanda təhlükəsizlik təlimi",
     ],
@@ -68,11 +61,11 @@ const services = [
     title: "İnfrastruktur",
     tagline: "Saytınız və sistemləriniz dayanmadan, sürətlə işləsin.",
     description:
-      "Yenilik buraxanda sistem çökməsin, saytınız gecə-gündüz işləsin, problem olanda dərhal biləsiniz. Texniki infrastrukturu biz qururuq.",
+      "Yenilik buraxanda sistem çökməsin, saytınız gecə-gündüz işləsin, problem olanda dərhal biləsiniz.",
     deliverables: [
       "Avtomatik buraxılış — yenilik bir kliklə yayılır",
       "Server və hosting qurulması (AWS, Azure, DigitalOcean)",
-      "Saytın dayanmadan işləməsi üçün monitorinq sistemi",
+      "Dayanmadan işləmə üçün monitorinq sistemi",
       "Problem olduqda avtomatik xəbərdarlıq",
       "Backup və fəlakətdən bərpa strategiyası",
     ],
@@ -83,7 +76,7 @@ const services = [
     title: "Avtomatlaşdırma",
     tagline: "Manual prosesləri sistemlərə çevirin.",
     description:
-      "Hər həftə təkrarlanan əl işləri — hesabat, fakturalama, məlumat köçürmə, e-poçt cavabları — bir dəfə qurulan sistemə çevrilir.",
+      "Hər həftə təkrarlanan əl işləri — hesabat, fakturalama, məlumat köçürmə — bir dəfə qurulan sistemə çevrilir.",
     deliverables: [
       "Biznes proseslərinin analizi və xəritələnməsi",
       "Sistemlər arası inteqrasiya (CRM, ERP, mühasibat)",
@@ -98,7 +91,7 @@ const services = [
     title: "Biznes analitika",
     tagline: "Məlumatınızı qərara çevirən dashboard-lar.",
     description:
-      "Excel cədvəlləri arasında itən məlumat — bir baxışda anlaşılan dashboard-a çevrilir. Qərarlar hisslərlə yox, faktlarla verilir.",
+      "Excel cədvəlləri arasında itən məlumat — bir baxışda anlaşılan dashboard-a çevrilir. Qərarlar hisslərlə yox, faktlarla.",
     deliverables: [
       "Məlumat mənbələrinin birləşdirilməsi",
       "İnteraktiv dashboard — bir baxışda bütün rəqəmlər",
@@ -113,7 +106,7 @@ const services = [
     title: "Telegram botlar",
     tagline: "Müştəriləriniz artıq Telegram-dadır — siz də orada olun.",
     description:
-      "Sifariş qəbulu, müştəri dəstəyi, bildirişlər, CRM inteqrasiya — hamısı bir Telegram botda. Müştəriləriniz tanış mühitdən çıxmadan sizinlə işləyir.",
+      "Sifariş qəbulu, müştəri dəstəyi, bildirişlər, CRM inteqrasiya — hamısı bir Telegram botda.",
     deliverables: [
       "Sifariş və rezervasiya qəbulu",
       "Avtomatik müştəri dəstəyi (FAQ, status sorğusu)",
@@ -122,131 +115,279 @@ const services = [
       "Çoxdilli dəstək (az/en/ru)",
     ],
   },
+  {
+    id: "extension",
+    icon: Puzzle,
+    title: "Chrome extensions",
+    tagline: "Brauzer üzərindən iş axınını sürətləndirin.",
+    description:
+      "Müştərilərinizin və ya komandanızın gündəlik istifadə etdiyi brauzeri güclü bir iş alətinə çevirin — xüsusi Chrome extension ilə.",
+    deliverables: [
+      "Xüsusi funksionallıq olan Chrome extension",
+      "Saytlarla real-time inteqrasiya (scraping, autofill, overlay)",
+      "Backend API ilə sinxronizasiya",
+      "Chrome Web Store-a yerləşdirmə",
+      "Yenilənmə və dəstək",
+    ],
+  },
 ];
 
 export default function ServicesPage() {
+  const [active, setActive] = useState(0);
+  const [expandedMobile, setExpandedMobile] = useState<number | null>(null);
+  const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startAuto = () => {
+    if (autoRef.current) clearInterval(autoRef.current);
+    autoRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % services.length);
+    }, 8000);
+  };
+
+  useEffect(() => {
+    startAuto();
+    return () => { if (autoRef.current) clearInterval(autoRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const selectService = (i: number) => {
+    setActive(i);
+    startAuto(); // istifadəçi seçim etdikdə timer sıfırlanır
+  };
+
+  const s = services[active];
+  const ActiveIcon = s.icon;
+
   return (
-    <>
-      {/* ═══ HERO ═══ */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-24 overflow-hidden">
-        <div className="absolute inset-0 hero-glow pointer-events-none" />
-        <div className="relative max-w-3xl mx-auto px-4 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-block text-[12px] font-semibold uppercase tracking-[0.12em] text-[var(--color-gold)] mb-5"
-          >
-            Xidmətlərimiz
-          </motion.span>
+    <div className="pt-16">
+
+
+      {/* ── Hero: split layout ── */}
+      <section className="border-b border-[var(--color-hairline)] grid md:grid-cols-[1fr_1px_400px] lg:grid-cols-[1fr_1px_460px]">
+        <div className="px-6 md:px-12 py-14 md:py-24">
           <motion.h1
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="display font-[family-name:var(--font-display)] text-[40px] md:text-[56px] font-extrabold text-ink leading-[1.08] tracking-[-0.025em] mb-6"
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-[family-name:var(--font-display)] text-[52px] md:text-[72px] lg:text-[88px] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.035em]"
           >
-            Altı sahə,{" "}
-            <span className="text-[var(--color-gold)]">bir parlaq tərəfdaş</span>.
+            Hər ehtiyac<br />
+            üçün<br />
+            <em className="not-italic text-[var(--color-gold)]">düzgün həll.</em>
           </motion.h1>
+        </div>
+
+        <div className="hidden md:block bg-[var(--color-hairline)]" />
+
+        <div className="hidden md:flex px-10 lg:px-12 flex-col justify-center">
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-slate text-[18px] md:text-[19px] leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-[16px] text-[var(--color-slate)] leading-relaxed mb-5"
           >
-            Altı satıcı əvəzinə bir ulduz. Ehtiyacınızı dinləyirik,
-            uyğun mütəxəssisləri seçirik, sabit qiymətlə təhvil veririk.
+            Hər layihənin ehtiyacını analiz edir, uyğun mütəxəssisləri
+            seçirik. Siz yalnız real lazım olan üçün ödəyirsiniz.
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="text-[16px] text-[var(--color-slate)] leading-relaxed"
+          >
+            Birbaşa texniki rəhbərlə danışırsınız — arada menecer,
+            satış təmsilçisi, vasitəçi yoxdur.
           </motion.p>
         </div>
       </section>
 
-      {/* ═══ SERVICES ═══ */}
-      <section className="py-12 md:py-16">
-        <div className="max-w-6xl mx-auto px-4 space-y-6">
-          {services.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <AnimatedSection key={s.id} delay={i * 0.05}>
-                <article
-                  id={s.id}
-                  className="card-lift bg-white border border-[var(--color-hairline)] rounded-2xl p-8 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 scroll-mt-24"
-                >
-                  <div className="md:col-span-5">
-                    <div className="w-12 h-12 rounded-lg bg-[var(--color-gold-soft)] flex items-center justify-center mb-5">
-                      <Icon size={22} strokeWidth={1.75} className="text-[var(--color-gold)]" />
-                    </div>
-                    <h2 className="font-[family-name:var(--font-display)] text-[26px] md:text-[30px] font-bold text-ink leading-[1.2] tracking-[-0.02em] mb-3">
-                      {s.title}
-                    </h2>
-                    <p className="text-[var(--color-gold-hover)] text-[15px] font-medium mb-4">
-                      {s.tagline}
-                    </p>
-                    <p className="text-slate text-[15.5px] leading-relaxed">
-                      {s.description}
-                    </p>
-                  </div>
+      {/* ── DESKTOP: Interactive two-panel ── */}
+      <section className="hidden md:grid grid-cols-[380px_1px_1fr] lg:grid-cols-[420px_1px_1fr] border-b border-[var(--color-hairline)]">
 
-                  <div className="md:col-span-7 md:border-l md:border-[var(--color-hairline)] md:pl-10">
-                    <h3 className="text-[12px] font-semibold uppercase tracking-[0.12em] text-mist-slate mb-4">
-                      Nə təhvil veririk
-                    </h3>
-                    <ul className="space-y-3">
-                      {s.deliverables.map((d) => (
-                        <li
-                          key={d}
-                          className="flex items-start gap-3 text-[15px] text-ink"
-                        >
-                          <div className="w-5 h-5 rounded-full bg-[var(--color-gold-soft)] flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <Check size={12} strokeWidth={3} className="text-[var(--color-gold)]" />
-                          </div>
-                          <span>{d}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              </AnimatedSection>
-            );
-          })}
+        {/* Left: service list */}
+        <div>
+          {services.map((sv, i) => (
+            <button
+              key={sv.id}
+              onMouseEnter={() => selectService(i)}
+              onClick={() => selectService(i)}
+              className={`w-full text-left px-8 py-5 border-b flex items-center justify-between group transition-colors duration-150 ${
+                active === i
+                  ? "border-[var(--color-gold)] bg-[var(--color-gold-soft)]"
+                  : "border-[var(--color-hairline)] hover:bg-[var(--color-mist)]"
+              }`}
+            >
+              <div className="flex items-center gap-5">
+                <span className="font-mono text-[11px] text-[var(--color-slate)]/40 w-6">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className={`font-[family-name:var(--font-display)] text-[19px] font-bold leading-none transition-colors ${
+                    active === i
+                      ? "text-[var(--color-gold)]"
+                      : "text-[var(--color-ink)] group-hover:text-[var(--color-gold)]"
+                  }`}
+                >
+                  {sv.title}
+                </span>
+              </div>
+              <ArrowUpRight
+                size={16}
+                strokeWidth={2}
+                className={`flex-shrink-0 transition-all duration-200 ${
+                  active === i
+                    ? "text-[var(--color-gold)] opacity-100"
+                    : "opacity-0 group-hover:opacity-60 -translate-x-1 group-hover:translate-x-0"
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+
+        {/* Vertical rule */}
+        <div className="bg-[var(--color-hairline)]" />
+
+        {/* Right: sticky detail */}
+        <div className="relative">
+          <div className="sticky top-24 p-10 lg:p-14">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.22 }}
+              >
+                <div className="w-12 h-12 rounded-xl bg-[var(--color-gold-soft)] flex items-center justify-center mb-8">
+                  <ActiveIcon size={22} strokeWidth={1.75} className="text-[var(--color-gold)]" />
+                </div>
+
+                <h2 className="font-[family-name:var(--font-display)] text-[32px] font-bold text-[var(--color-ink)] mb-2 tracking-[-0.02em]">
+                  {s.title}
+                </h2>
+                <p className="text-[14px] font-medium text-[var(--color-gold-hover)] mb-6">
+                  {s.tagline}
+                </p>
+                <p className="text-[16px] text-[var(--color-slate)] leading-relaxed mb-10">
+                  {s.description}
+                </p>
+
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--color-slate)] mb-5">
+                    Nə təhvil veririk
+                  </p>
+                  <ul className="space-y-3">
+                    {s.deliverables.map((d) => (
+                      <li key={d} className="flex items-start gap-3 text-[15px] text-[var(--color-ink)]">
+                        <div className="w-5 h-5 rounded-full bg-[var(--color-gold-soft)] flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check size={11} strokeWidth={3} className="text-[var(--color-gold)]" />
+                        </div>
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </section>
 
-      {/* ═══ CTA ═══ */}
-      <section className="py-16 md:py-20">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <AnimatedSection>
-            <h2 className="font-[family-name:var(--font-display)] text-[32px] md:text-[44px] font-bold text-ink leading-[1.15] tracking-[-0.025em] mb-5">
+      {/* ── MOBILE: Accordion ── */}
+      <section className="md:hidden border-b border-[var(--color-hairline)]">
+        {services.map((sv, i) => {
+          const Icon = sv.icon;
+          const open = expandedMobile === i;
+          return (
+            <div key={sv.id} className="border-b border-[var(--color-hairline)] last:border-0">
+              <button
+                onClick={() => setExpandedMobile(open ? null : i)}
+                className="w-full text-left px-6 py-5 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4">
+                  <span className="font-mono text-[11px] text-[var(--color-slate)]/40">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-[family-name:var(--font-display)] text-[18px] font-bold text-[var(--color-ink)]">
+                    {sv.title}
+                  </span>
+                </div>
+                <motion.div
+                  animate={{ rotate: open ? 45 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ArrowUpRight size={16} strokeWidth={2} className="text-[var(--color-gold)]" />
+                </motion.div>
+              </button>
+
+              <AnimatePresence>
+                {open && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-6 pb-8 pt-2">
+                      <div className="w-10 h-10 rounded-lg bg-[var(--color-gold-soft)] flex items-center justify-center mb-5">
+                        <Icon size={18} strokeWidth={1.75} className="text-[var(--color-gold)]" />
+                      </div>
+                      <p className="text-[14px] font-medium text-[var(--color-gold-hover)] mb-3">
+                        {sv.tagline}
+                      </p>
+                      <p className="text-[15px] text-[var(--color-slate)] leading-relaxed mb-6">
+                        {sv.description}
+                      </p>
+                      <ul className="space-y-2.5">
+                        {sv.deliverables.map((d) => (
+                          <li key={d} className="flex items-start gap-3 text-[14px] text-[var(--color-ink)]">
+                            <Check size={14} strokeWidth={2.5} className="text-[var(--color-gold)] flex-shrink-0 mt-0.5" />
+                            {d}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="py-16 md:py-24">
+        <div className="px-6 md:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-xl"
+          >
+            <h2 className="font-[family-name:var(--font-display)] text-[36px] md:text-[52px] font-bold text-[var(--color-ink)] leading-[1.1] tracking-[-0.025em] mb-6">
               Hansı sahədən başlayaq?
             </h2>
-            <p className="text-slate text-[17px] leading-relaxed max-w-xl mx-auto mb-8">
+            <p className="text-[16px] text-[var(--color-slate)] leading-relaxed mb-8">
               Ehtiyacınızı birlikdə analiz edirik. Konkret plan, konkret
               qiymət — heç bir öhdəlik yoxdur.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
               <GoldButton href="/contact" size="lg" withArrow>
-                Layihənizi müzakirə edək
+                Pulsuz konsultasiya alın
               </GoldButton>
-              <a
-                href="https://wa.me/994502017164"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-[15px] font-semibold rounded-lg border border-[var(--color-hairline-strong)] text-ink hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors"
+              <Link
+                href="/projects"
+                className="text-[14px] font-semibold text-[var(--color-slate)] hover:text-[var(--color-ink)] transition-colors flex items-center gap-1.5 sm:pt-3.5"
               >
-                WhatsApp ilə yazın
-                <ArrowRight size={16} strokeWidth={2.25} />
-              </a>
-            </div>
-            <div className="flex items-center justify-center gap-6 text-[14px]">
-              <Link href="/projects" className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] font-medium transition-colors">
-                Layihələrimizə baxın →
-              </Link>
-              <Link href="/blog" className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] font-medium transition-colors">
-                Bloqu oxuyun →
+                Layihələrimizə baxın <ArrowUpRight size={14} />
               </Link>
             </div>
-          </AnimatedSection>
+          </motion.div>
         </div>
       </section>
-    </>
+
+    </div>
   );
 }

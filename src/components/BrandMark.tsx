@@ -1,4 +1,4 @@
-type Theme = "gold-bg" | "gold-on-light";
+type Theme = "gold-bg" | "gold-on-light" | "gold-on-dark" | "white-on-gold";
 
 export default function BrandMark({
   theme = "gold-on-light",
@@ -9,8 +9,8 @@ export default function BrandMark({
   size?: number;
   radius?: number;
 }) {
-  const bg = theme === "gold-bg" ? "#B8893A" : "#FFFFFF";
-  const fg = theme === "gold-bg" ? "#FFFFFF" : "#B8893A";
+  const bg = theme === "gold-bg" ? "#B8893A" : theme === "gold-on-dark" ? "#0F1419" : theme === "white-on-gold" ? "transparent" : "#FFFFFF";
+  const fg = theme === "gold-bg" ? "#FFFFFF" : theme === "white-on-gold" ? "#FFFFFF" : "#B8893A";
   const r = radius ?? Math.round(size * 0.2);
 
   const cx = 16,
