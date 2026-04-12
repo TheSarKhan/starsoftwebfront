@@ -85,6 +85,9 @@ export default function AboutPage() {
               StarSoft məhz bu ehtiyac üçün Bakıda quruldu. Vədimiz sadədir:{" "}
               <span className="text-[var(--color-gold)] font-semibold">daha az resursla, daha çox nəticə.</span>
             </motion.p>
+            <motion.p {...fade(0.14)} className="text-[15px] text-[var(--color-slate)] leading-[1.8] border-t border-[var(--color-hairline)] pt-4 mt-2">
+              Loqomuzdakı səkkiz guşə səkkiz xidmət sahəmizi — hər biri ayrı bir bacarıq, ayrı bir sahə — təmsil edir. Ortadakı nöqtə isə hamısının döndüyü mərkəzdir: <em className="not-italic font-medium text-[var(--color-ink)]">sizin biznesiniz.</em> Hər xətt ona doğru uzanır, hər guşə onun üçün mövcuddur.
+            </motion.p>
           </div>
         </div>
         <div className="hidden md:block bg-[var(--color-hairline)]" />
