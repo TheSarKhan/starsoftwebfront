@@ -19,6 +19,7 @@ export default function QuillEditor({ value, onChange, placeholder }: Props) {
 
   // Dynamically load Quill CSS only when this component mounts
   useEffect(() => {
+    // @ts-ignore
     import("react-quill-new/dist/quill.snow.css");
   }, []);
 
