@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
 import BrandMark from "@/components/BrandMark";
 
@@ -118,8 +118,28 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-6 border-t border-[var(--color-hairline)] flex flex-col md:flex-row justify-between items-center gap-3 text-[13px] text-mist-slate">
+        <div className="pt-6 border-t border-[var(--color-hairline)] flex flex-col md:flex-row justify-between items-center gap-4 text-[13px] text-mist-slate">
           <p>&copy; {new Date().getFullYear()} StarSoft. Bütün hüquqlar qorunur.</p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.instagram.com/starsoft.az/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="text-slate hover:text-[var(--color-gold)] transition-colors"
+            >
+              <Instagram size={18} strokeWidth={1.5} />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/star-software-solutions/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="text-slate hover:text-[var(--color-gold)] transition-colors"
+            >
+              <Linkedin size={18} strokeWidth={1.5} />
+            </a>
+          </div>
           <p>Bakıda hazırlanır. Azərbaycan biznesi üçün.</p>
         </div>
       </div>

@@ -6,6 +6,7 @@ import FooterWrapper from "@/components/FooterWrapper";
 import Analytics from "@/components/Analytics";
 import CookieConsent from "@/components/CookieConsent";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
+import ChatWidget from "@/components/ChatWidget";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
@@ -105,7 +106,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="az" className={`${jakarta.variable} ${inter.variable}`}>
-      <body className="bg-canvas text-ink antialiased">
+      <body className="bg-canvas text-ink antialiased" suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -113,6 +114,7 @@ export default function RootLayout({
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <FooterWrapper />
+        <ChatWidget />
         <WhatsAppWidget />
         <CookieConsent />
         <Analytics />
