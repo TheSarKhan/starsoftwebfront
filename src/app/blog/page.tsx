@@ -18,6 +18,7 @@ export default function BlogPage() {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [activeTag, setActiveTag] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -30,6 +31,20 @@ export default function BlogPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [page]);
+
+  const allTags = Array.from(
+    new Set(
+      posts.flatMap((p) =>
+        p.tags ? p.tags.split(",").map((t) => t.trim()).filter(Boolean) : []
+      )
+    )
+  );
+
+  const visiblePosts = activeTag
+    ? posts.filter((p) =>
+        p.tags?.split(",").map((t) => t.trim()).includes(activeTag)
+      )
+    : posts;
 
   return (
     <div className="pt-16">
@@ -67,6 +82,35 @@ export default function BlogPage() {
 
       {/* ── Posts ── */}
       <section>
+
+        {/* Tag filter bar */}
+        {!loading && allTags.length > 0 && (
+          <div className="px-6 md:px-12 py-5 border-b border-[var(--color-hairline)] flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveTag(null)}
+              className={`px-3.5 py-1.5 text-[12px] font-semibold rounded-full transition-colors ${
+                activeTag === null
+                  ? "bg-[var(--color-ink)] text-white"
+                  : "border border-[var(--color-hairline-strong)] text-[var(--color-slate)] hover:border-[var(--color-slate)]"
+              }`}
+            >
+              Hamısı
+            </button>
+            {allTags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(tag === activeTag ? null : tag)}
+                className={`px-3.5 py-1.5 text-[12px] font-semibold rounded-full transition-colors ${
+                  activeTag === tag
+                    ? "bg-[var(--color-gold)] text-white"
+                    : "border border-[var(--color-hairline-strong)] text-[var(--color-slate)] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)]"
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Loading */}
         {loading && (
@@ -116,9 +160,9 @@ export default function BlogPage() {
         )}
 
         {/* Post list */}
-        {!loading && posts.length > 0 && (
+        {!loading && visiblePosts.length > 0 && (
           <div className="divide-y divide-[var(--color-hairline)]">
-            {posts.map((post, i) => {
+            {visiblePosts.map((post, i) => {
               const tags = post.tags ? post.tags.split(",").map((t) => t.trim()).filter(Boolean) : [];
               const date = post.publishedAt
                 ? (() => { const d = new Date(post.publishedAt); return `${String(d.getDate()).padStart(2,"0")}.${String(d.getMonth()+1).padStart(2,"0")}.${d.getFullYear()}`; })()

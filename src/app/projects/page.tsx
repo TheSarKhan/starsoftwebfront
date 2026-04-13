@@ -13,6 +13,7 @@ const API_HOST =
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     api
@@ -20,6 +21,14 @@ export default function ProjectsPage() {
       .then((p) => { setProjects(p); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  const categories = Array.from(
+    new Set(projects.map((p) => p.category).filter(Boolean))
+  );
+
+  const visibleProjects = activeCategory
+    ? projects.filter((p) => p.category === activeCategory)
+    : projects;
 
   return (
     <div className="pt-16">
@@ -40,6 +49,36 @@ export default function ProjectsPage() {
 
       {/* ── Projects: editorial alternating layout ── */}
       <section className="divide-y divide-[var(--color-hairline)]">
+
+        {/* Category filter */}
+        {!loading && categories.length > 1 && (
+          <div className="px-6 md:px-12 py-5 flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveCategory(null)}
+              className={`px-3.5 py-1.5 text-[12px] font-semibold rounded-full transition-colors ${
+                activeCategory === null
+                  ? "bg-[var(--color-ink)] text-white"
+                  : "border border-[var(--color-hairline-strong)] text-[var(--color-slate)] hover:border-[var(--color-slate)]"
+              }`}
+            >
+              Hamısı
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
+                className={`px-3.5 py-1.5 text-[12px] font-semibold rounded-full transition-colors ${
+                  activeCategory === cat
+                    ? "bg-[var(--color-gold)] text-white"
+                    : "border border-[var(--color-hairline-strong)] text-[var(--color-slate)] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)]"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+
         {loading && (
           <div className="px-6 md:px-12 py-24">
             <div className="flex items-center gap-4">
@@ -49,7 +88,7 @@ export default function ProjectsPage() {
           </div>
         )}
 
-        {!loading && projects.length === 0 && (
+        {!loading && visibleProjects.length === 0 && (
           <div className="px-6 md:px-12 py-24 max-w-xl">
             <p className="font-[family-name:var(--font-display)] text-[28px] font-bold text-[var(--color-ink)] mb-4">
               Tezliklə.
@@ -60,7 +99,7 @@ export default function ProjectsPage() {
           </div>
         )}
 
-        {projects.map((p, i) => {
+        {visibleProjects.map((p, i) => {
           const techs = (p.technologies || "")
             .split(",")
             .map((t) => t.trim())

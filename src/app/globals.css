@@ -18,7 +18,7 @@
   --color-slate:         #5A6072;   /* secondary text */
   --color-mist-slate:    #8B8FA0;   /* muted text */
 
-  /* Brand accent — Khan Gold */
+  /* Brand accent — StarSoft Gold */
   --color-gold:          #B8893A;
   --color-gold-hover:    #9A7128;
   --color-gold-soft:     #FBF5E6;
@@ -133,8 +133,19 @@ a {
   }
 }
 
-/* Mobile: normal vertical stack */
+/* Mobile: vertical snap presentation */
 @media (max-width: 767px) {
-  .h-slide { padding-bottom: 3rem; }
-  .h-slide:first-child { padding-top: 5rem; }   /* clearfix for fixed navbar */
+  .h-scroll-container {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    height: calc(100dvh - 4rem);
+  }
+  .h-slide {
+    min-width: 100vw;
+    min-height: calc(100dvh - 4rem);
+    height: calc(100dvh - 4rem);
+    scroll-snap-align: start;
+  }
 }

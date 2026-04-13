@@ -11,7 +11,7 @@ const contactRows = [
   { label: "Telefon",       value: "+994 50 201 71 64",              href: "tel:+994502017164" },
   { label: "WhatsApp",      value: "+994 50 201 71 64",              href: "https://wa.me/994502017164" },
   { label: "Ünvan",         value: "Bakı, Azərbaycan",              href: null },
-  { label: "İş saatları",  value: "B.e – Cümə, 09:00 – 18:00",    href: null },
+  { label: "İş saatları",  value: "Bazar ertəsi – Cümə, 09:00 – 18:00",    href: null },
 ];
 
 const inputCls =
@@ -236,9 +236,6 @@ export default function ContactPage() {
                     >
                       {status === "loading" ? "Göndərilir..." : "Göndərin"}
                     </GoldButton>
-                    <p className="text-[12px] text-[var(--color-mist-slate)]">
-                      Məlumatlarınız təhlükəsiz qorunur.
-                    </p>
                   </div>
                 </form>
               </motion.div>

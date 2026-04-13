@@ -3,6 +3,9 @@ import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import FooterWrapper from "@/components/FooterWrapper";
+import Analytics from "@/components/Analytics";
+import CookieConsent from "@/components/CookieConsent";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
@@ -110,6 +113,9 @@ export default function RootLayout({
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <FooterWrapper />
+        <WhatsAppWidget />
+        <CookieConsent />
+        <Analytics />
       </body>
     </html>
   );

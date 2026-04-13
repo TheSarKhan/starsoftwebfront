@@ -6,6 +6,24 @@ import { ArrowUpRight } from "lucide-react";
 import BrandMark from "@/components/BrandMark";
 import GoldButton from "@/components/GoldButton";
 
+const testimonials = [
+  {
+    quote: "StarSoft saytımızı 3 həftəyə hazırladı. Dəqiq müddət, dəqiq qiymət — vəd verdiklərini tam yerinə yetirdilər.",
+    name: "Tural Hüseynov",
+    role: "Müdir, Hüseynov Group",
+  },
+  {
+    quote: "Texniki tərəf ilə bağlı hər sualımıza saatlar içində cavab verdilər. Belə tərəfdaş tapmaq çətin olur.",
+    name: "Nigar Quliyeva",
+    role: "Kurucu, EduPlatform",
+  },
+  {
+    quote: "Avtomatlaşdırma həlləri sayəsində manual iş həcmimiz yarıya endi. Nəticə gözlədiyimdən tez geldi.",
+    name: "Rauf Əliyev",
+    role: "COO, LogiTrack",
+  },
+];
+
 const principles = [
   {
     n: "01",
@@ -85,9 +103,12 @@ export default function AboutPage() {
               StarSoft məhz bu ehtiyac üçün Bakıda quruldu. Vədimiz sadədir:{" "}
               <span className="text-[var(--color-gold)] font-semibold">daha az resursla, daha çox nəticə.</span>
             </motion.p>
-            <motion.p {...fade(0.14)} className="text-[15px] text-[var(--color-slate)] leading-[1.8] border-t border-[var(--color-hairline)] pt-4 mt-2">
-              Loqomuzdakı səkkiz guşə səkkiz xidmət sahəmizi — hər biri ayrı bir bacarıq, ayrı bir sahə — təmsil edir. Ortadakı nöqtə isə hamısının döndüyü mərkəzdir: <em className="not-italic font-medium text-[var(--color-ink)]">sizin biznesiniz.</em> Hər xətt ona doğru uzanır, hər guşə onun üçün mövcuddur.
-            </motion.p>
+            <motion.div {...fade(0.14)} className="border-t border-[var(--color-hairline)] pt-5 mt-2">
+              <p className="font-[family-name:var(--font-display)] text-[20px] md:text-[24px] font-bold text-[var(--color-ink)] leading-snug tracking-[-0.02em]">
+                Loqomuzdakı hər guşə bir xidmət sahəsini təmsil edir.<br />
+                <em className="not-italic text-[var(--color-gold)]">Mərkəz isə həmişə sizin biznesinizdir.</em>
+              </p>
+            </motion.div>
           </div>
         </div>
         <div className="hidden md:block bg-[var(--color-hairline)]" />
@@ -129,6 +150,30 @@ export default function AboutPage() {
               <div>
                 <h3 className="font-[family-name:var(--font-display)] text-[16px] font-bold text-[var(--color-ink)] mb-1 leading-tight">{p.title}</h3>
                 <p className="text-[14px] text-[var(--color-slate)] leading-relaxed">{p.body}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="border-b border-[var(--color-hairline)] px-6 md:px-12 py-14 md:py-20">
+        <motion.p {...fade()} className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)] mb-10">
+          Müştərilər deyir
+        </motion.p>
+        <div className="grid md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-[var(--color-hairline)]">
+          {testimonials.map(({ quote, name, role }, i) => (
+            <motion.div
+              key={name}
+              {...fade(i * 0.1)}
+              className="py-8 md:py-0 md:px-10 first:md:pl-0 last:md:pr-0 flex flex-col gap-6"
+            >
+              <p className="text-[16px] text-[var(--color-ink)] leading-[1.75] font-medium">
+                &ldquo;{quote}&rdquo;
+              </p>
+              <div>
+                <p className="text-[14px] font-semibold text-[var(--color-ink)]">{name}</p>
+                <p className="text-[13px] text-[var(--color-slate)]">{role}</p>
               </div>
             </motion.div>
           ))}

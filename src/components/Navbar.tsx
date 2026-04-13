@@ -22,7 +22,9 @@ import BrandMark from "@/components/BrandMark";
 function Logo() {
   return (
     <div className="flex items-center gap-2.5">
-      <BrandMark size={36} radius={8} />
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 24, repeat: Infinity, ease: "linear" }}>
+        <BrandMark size={36} radius={8} />
+      </motion.div>
       <span className="font-[family-name:var(--font-display)] text-[19px] font-extrabold text-ink tracking-tight">
         StarSoft
       </span>

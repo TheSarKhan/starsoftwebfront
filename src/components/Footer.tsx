@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { motion } from "framer-motion";
 import BrandMark from "@/components/BrandMark";
 
 const sections = [
@@ -35,7 +38,9 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-4">
             <Link href="/" className="flex items-center gap-2.5 mb-5">
-              <BrandMark size={40} radius={10} />
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 24, repeat: Infinity, ease: "linear" }}>
+                <BrandMark size={40} radius={10} />
+              </motion.div>
               <span className="font-[family-name:var(--font-display)] text-xl font-extrabold text-ink tracking-tight">
                 StarSoft
               </span>
