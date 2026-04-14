@@ -5,7 +5,6 @@ import Navbar from "@/components/Navbar";
 import FooterWrapper from "@/components/FooterWrapper";
 import Analytics from "@/components/Analytics";
 import CookieConsent from "@/components/CookieConsent";
-import WhatsAppWidget from "@/components/WhatsAppWidget";
 import ChatWidget from "@/components/ChatWidget";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -115,7 +114,6 @@ export default function RootLayout({
         <main className="min-h-screen">{children}</main>
         <FooterWrapper />
         <ChatWidget />
-        <WhatsAppWidget />
         <CookieConsent />
         <Analytics />
       </body>

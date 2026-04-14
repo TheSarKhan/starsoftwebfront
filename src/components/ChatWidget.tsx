@@ -91,7 +91,7 @@ export default function ChatWidget() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="ChatBot"
-        className="fixed bottom-6 left-6 z-50 w-[52px] h-[52px] rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform bg-[var(--color-ink)]"
+        className="fixed bottom-6 right-6 z-50 w-[52px] h-[52px] rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-transform bg-[var(--color-ink)]"
       >
         <AnimatePresence mode="wait" initial={false}>
           {open ? (
@@ -115,7 +115,7 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
-            className="fixed bottom-[76px] left-6 z-50 w-[340px] sm:w-[380px] bg-white border border-[var(--color-hairline)] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-[76px] right-6 z-50 w-[340px] sm:w-[380px] bg-white border border-[var(--color-hairline)] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
             style={{ maxHeight: "min(520px, calc(100dvh - 100px))" }}
           >
             {/* Header */}

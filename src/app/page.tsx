@@ -117,10 +117,19 @@ export default function HomePage() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+    let locked = false;
     const onWheel = (e: WheelEvent) => {
       if (window.innerWidth < 768) return;
       e.preventDefault();
-      el.scrollBy({ left: e.deltaY * 1.3 });
+      if (locked) return;
+      locked = true;
+      const current = Math.round(el.scrollLeft / el.clientWidth);
+      const next = e.deltaY > 0
+        ? Math.min(current + 1, TOTAL_SLIDES - 1)
+        : Math.max(current - 1, 0);
+      el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+      setCurrentSlide(next);
+      setTimeout(() => { locked = false; }, 700);
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);

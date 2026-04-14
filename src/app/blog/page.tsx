@@ -7,11 +7,6 @@ import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 import GoldButton from "@/components/GoldButton";
 import { api, BlogPost } from "@/lib/api";
 
-const upcomingTopics = [
-  "Biznesiniz üçün sayt nəyə lazımdır və nə qədər başa gəlir?",
-  "Kibertəhlükəsizlik — kiçik biznes üçün nəyə diqqət etməli?",
-  "Avtomatlaşdırma ilə həftədə 20+ saat necə qazanılır?",
-];
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -124,38 +119,16 @@ export default function BlogPage() {
 
         {/* Empty state */}
         {!loading && posts.length === 0 && (
-          <div className="px-6 md:px-12 py-16 md:py-24 grid md:grid-cols-[1fr_1px_400px] gap-0">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)] mb-8">
-                Tezliklə bu mövzularda
-              </p>
-              <div className="space-y-0">
-                {upcomingTopics.map((topic, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-6 py-6 border-b border-[var(--color-hairline)] last:border-0"
-                  >
-                    <span className="font-mono text-[11px] text-[var(--color-slate)]/40 pt-1 flex-shrink-0">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <p className="text-[17px] text-[var(--color-ink)] leading-snug font-medium">
-                      {topic}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="hidden md:block bg-[var(--color-hairline)] mx-12" />
-
-            <div className="hidden md:flex flex-col justify-center">
-              <p className="text-[16px] text-[var(--color-slate)] leading-relaxed mb-8">
-                Konkret sualınız varsa, birbaşa soruşun — cavab verməkdən məmnun olarıq.
-              </p>
-              <GoldButton href="/contact" variant="secondary" withArrow>
-                Sualınızı göndərin
-              </GoldButton>
-            </div>
+          <div className="px-6 md:px-12 py-24 flex flex-col items-start gap-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)]">
+              Yazılar tezliklə əlavə ediləcək
+            </p>
+            <p className="text-[16px] text-[var(--color-slate)] leading-relaxed max-w-md">
+              Hələlik bloq yazısı yoxdur. Sualınız varsa bizimlə birbaşa əlaqə saxlaya bilərsiniz.
+            </p>
+            <GoldButton href="/contact" variant="secondary" withArrow>
+              Əlaqə saxlayın
+            </GoldButton>
           </div>
         )}
 
