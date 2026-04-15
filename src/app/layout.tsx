@@ -27,6 +27,7 @@ const DESCRIPTION =
   "StarSoft — Bakı əsaslı IT şirkəti. Web sayt, mobil tətbiq, kibertəhlükəsizlik, avtomatlaşdırma. Sabit qiymət, etibarlı tərəfdaş.";
 
 export const metadata: Metadata = {
+  applicationName: "StarSoft",
   title: {
     default: TITLE,
     template: "%s | StarSoft",
@@ -52,9 +53,27 @@ export const metadata: Metadata = {
   creator: "StarSoft",
   publisher: "StarSoft",
   metadataBase: new URL(SITE_URL),
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   alternates: {
     canonical: SITE_URL,
+    languages: {
+      "az-AZ": SITE_URL,
+    },
   },
+  icons: {
+    icon: [
+      { url: "/logo-mark.svg", type: "image/svg+xml" },
+      { url: "/logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/logo-mark.svg", type: "image/svg+xml" }],
+    shortcut: ["/logo-mark.svg"],
+  },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "az_AZ",
@@ -62,13 +81,13 @@ export const metadata: Metadata = {
     siteName: "StarSoft",
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "StarSoft — Azərbaycan IT şirkəti" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "StarSoft — Azərbaycan IT şirkəti" }],
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
@@ -81,6 +100,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  category: "technology",
 };
 
 const localBusinessJsonLd = {
@@ -94,7 +114,7 @@ const localBusinessJsonLd = {
     "@type": "ImageObject",
     url: `${SITE_URL}/logo.svg`,
   },
-  image: `${SITE_URL}/og-image.png`,
+  image: `${SITE_URL}/opengraph-image`,
   description: DESCRIPTION,
   slogan: "Azərbaycan biznesinin texnoloji tərəfdaşı",
   founder: { "@type": "Person", name: "Sərxan Babayev" },
@@ -137,7 +157,21 @@ const localBusinessJsonLd = {
   },
   sameAs: [
     "https://wa.me/994502017164",
+    "https://www.instagram.com/starsoft.az/",
+    "https://www.linkedin.com/company/star-software-solutions/",
   ],
+};
+
+const webSiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: SITE_URL,
+  name: "StarSoft",
+  inLanguage: "az",
+  publisher: {
+    "@id": `${SITE_URL}/#organization`,
+  },
 };
 
 export default function RootLayout({
@@ -149,6 +183,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
         />
         <Navbar />
         <main className="min-h-screen">{children}</main>

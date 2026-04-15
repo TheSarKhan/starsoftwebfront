@@ -5,8 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin/', '/api/', '/images/'],
+      disallow: ['/admin/', '/api/'],
     },
+    host: 'https://starsoft.az',
     sitemap: 'https://starsoft.az/sitemap.xml',
   };
 }
