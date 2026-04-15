@@ -20,6 +20,7 @@ export default function AdminLoginPage() {
     try {
       const data = await api.login(form);
       localStorage.setItem("starsoft_token", data.token);
+      localStorage.setItem("starsoft_refresh_token", data.refreshToken);
       localStorage.setItem(
         "starsoft_user",
         JSON.stringify({ username: data.username, fullName: data.fullName })

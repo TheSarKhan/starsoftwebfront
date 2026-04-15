@@ -24,6 +24,21 @@ const navItems = [
   { href: "/admin/settings", label: "Ayarlar", icon: Settings },
 ];
 
+function isExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return Date.now() >= payload.exp * 1000;
+  } catch {
+    return true;
+  }
+}
+
+function clearAuth() {
+  localStorage.removeItem("starsoft_token");
+  localStorage.removeItem("starsoft_refresh_token");
+  localStorage.removeItem("starsoft_user");
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,19 +50,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setAuthChecked(true);
       return;
     }
-    const token = localStorage.getItem("starsoft_token");
-    const userStr = localStorage.getItem("starsoft_user");
-    if (!token) {
-      router.replace("/admin/login");
-      return;
+
+    async function checkAuth() {
+      const token = localStorage.getItem("starsoft_token");
+      const refreshToken = localStorage.getItem("starsoft_refresh_token");
+
+      // No tokens at all → login
+      if (!token) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      // Access token still valid
+      if (!isExpired(token)) {
+        const userStr = localStorage.getItem("starsoft_user");
+        if (userStr) setUser(JSON.parse(userStr));
+        setAuthChecked(true);
+        return;
+      }
+
+      // Access token expired — try refresh
+      if (!refreshToken || isExpired(refreshToken)) {
+        clearAuth();
+        router.replace("/admin/login");
+        return;
+      }
+
+      try {
+        const data = await api.refreshToken(refreshToken);
+        localStorage.setItem("starsoft_token", data.token);
+        localStorage.setItem("starsoft_refresh_token", data.refreshToken);
+        const userStr = localStorage.getItem("starsoft_user");
+        if (userStr) setUser(JSON.parse(userStr));
+        setAuthChecked(true);
+      } catch {
+        clearAuth();
+        router.replace("/admin/login");
+      }
     }
-    if (userStr) setUser(JSON.parse(userStr));
-    setAuthChecked(true);
+
+    checkAuth();
   }, [pathname, router]);
 
   const logout = () => {
-    localStorage.removeItem("starsoft_token");
-    localStorage.removeItem("starsoft_user");
+    clearAuth();
     router.push("/admin/login");
   };
 

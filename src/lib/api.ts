@@ -35,6 +35,7 @@ async function cached<T>(key: string, fn: () => Promise<T>, ttl = PUBLIC_TTL): P
 async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, {
     headers: { "Content-Type": "application/json" },
+    cache: "no-store",
     ...options,
   });
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
@@ -68,6 +69,11 @@ export const api = {
   // Auth
   login: (data: { username: string; password: string }) =>
     fetcher<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(data) }),
+  refreshToken: (refreshToken: string) =>
+    fetcher<{ token: string; refreshToken: string }>("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refreshToken }),
+    }),
 
   // Admin — shorter TTL; mutations invalidate relevant keys
   admin: {
@@ -239,7 +245,7 @@ export interface SiteSetting {
 }
 
 export interface AuthResponse {
-  token: string; username: string; fullName: string; role: string;
+  token: string; refreshToken: string; username: string; fullName: string; role: string;
 }
 
 export interface DashboardStats {
