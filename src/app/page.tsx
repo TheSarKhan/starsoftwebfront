@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Globe, Smartphone, ShieldCheck, Server, Zap, BarChart3, Bot, Puzzle,
-  ChevronLeft, ChevronRight, ArrowUpRight,
+  ChevronLeft, ChevronRight, ChevronDown, ArrowUpRight,
 } from "lucide-react";
 import GoldButton from "@/components/GoldButton";
 import BrandMark from "@/components/BrandMark";
@@ -59,8 +59,11 @@ const TOTAL_SLIDES = 5;
 /* ── Slide wrapper ── */
 function SlideHeader({ section, subtitle, n }: { section: string; subtitle?: string; n: string }) {
   return (
-    <div className="border-b border-[var(--color-hairline)] px-6 md:px-10 py-3 flex items-center justify-between flex-shrink-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-gold)]">{section}</p>
+    <div className="border-b border-[var(--color-hairline)] bg-[var(--color-canvas)] px-5 md:px-10 py-3 flex items-center justify-between flex-shrink-0">
+      <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-[var(--color-gold)]">
+        {section}
+        <ChevronDown size={12} strokeWidth={1.75} className="md:hidden text-[var(--color-gold)]/80" />
+      </p>
       {subtitle && <p className="text-[12px] text-[var(--color-slate)] hidden lg:block">{subtitle}</p>}
       <span className="font-mono text-[12px] text-[var(--color-slate)]/60">{n}</span>
     </div>
@@ -355,7 +358,7 @@ export default function HomePage() {
             <div className="flex-1 px-5 py-4 flex flex-col justify-center">
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)]/50 mb-4">Əvvəl</p>
               <div className="space-y-2">
-                {["Aylıq 8–12 min AZN — işləsin ya işləməsin.", "Komanda yığmaq aylar aparır.", "Texniki işçi ayrılsa, layihə dayanır.", "Ofis və avadanlıq — istifadə olunsa da, xərc."].map((line, i) => (
+                {["Aylıq 8–12 min AZN — işləsin ya işləməsin.", "Komanda yığmaq aylar aparır.", "Texniki işçi ayrılsa, layihə dayanır.", "Ofis və avadanlıq — istifadə olunsa da, olunmasa da xərc."].map((line, i) => (
                   <p key={i} className="text-[13px] text-[var(--color-slate)]/50 leading-snug">{line}</p>
                 ))}
               </div>
@@ -473,7 +476,7 @@ export default function HomePage() {
               <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.1rem,10.5vw,2.75rem)] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.03em] mb-5">
                 Layihənizi<br />
                 birlikdə<br />
-                qurarıq.
+                quraq.
               </h2>
               <p className="text-[14px] text-[var(--color-slate)] leading-relaxed mb-8">
                 Eyni iş günü cavab veririk — ehtiyacınızı dinləyir, konkret plan və sabit qiymət təklif edirik.
@@ -508,7 +511,7 @@ export default function HomePage() {
               <h2 className="font-[family-name:var(--font-display)] text-[56px] lg:text-[68px] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.035em] mb-8">
                 Layihənizi<br />
                 birlikdə<br />
-                qurarıq.
+                quraq.
               </h2>
               <p className="text-[15px] text-[var(--color-slate)] leading-relaxed mb-10 max-w-sm">
                 Eyni iş günü cavab veririk — ehtiyacınızı dinləyir, konkret plan və sabit qiymət təklif edirik.
