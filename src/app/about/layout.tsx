@@ -4,10 +4,11 @@ import { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Haqqımızda",
   description:
-    "StarSoft — Azərbaycan biznesi üçün texnologiya tərəfdaşı. Daha az resursla daha çox iş: etibarlı, uyğun qiymətli, müasir və operativ texnologiya tərəfdaşı.",
+    "StarSoft — Bakı əsaslı IT şirkəti. Azərbaycan bizneslərinə web, mobil, kibertəhlükəsizlik və avtomatlaşdırma həlləri. Sabit qiymət, etibarlı komanda.",
+  alternates: { canonical: "https://starsoft.az/about" },
   openGraph: {
     title: "Haqqımızda | StarSoft",
-    description: "Azərbaycan biznesi üçün etibarlı texnologiya tərəfdaşı.",
+    description: "StarSoft — Bakı əsaslı IT şirkəti. Azərbaycan biznesinin texnoloji tərəfdaşı.",
     url: "https://starsoft.az/about",
   },
 };

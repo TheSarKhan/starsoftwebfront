@@ -22,9 +22,9 @@ const inter = Inter({
 });
 
 const SITE_URL = "https://starsoft.az";
-const TITLE = "StarSoft — Biznesinizi parlat, texniki tərəfi bizə burax";
+const TITLE = "StarSoft — Azərbaycan biznesinin texnoloji tərəfdaşı";
 const DESCRIPTION =
-  "Web, mobil, kibertəhlükəsizlik, DevOps, avtomatlaşdırma və biznes analitika — hər layihəyə uyğun mütəxəssislər, sabit qiymətə. Daxili IT komanda saxlamadan, daha az xərclə, daha çox iş.";
+  "StarSoft — Bakı əsaslı IT şirkəti. Web sayt, mobil tətbiq, kibertəhlükəsizlik, avtomatlaşdırma. Sabit qiymət, etibarlı tərəfdaş.";
 
 export const metadata: Metadata = {
   title: {
@@ -34,19 +34,27 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   keywords: [
     "StarSoft",
-    "IT şirkəti Azərbaycan",
-    "web development Bakı",
-    "mobil tətbiq",
-    "kibertəhlükəsizlik",
-    "DevOps",
-    "biznes analitika",
-    "avtomatlaşdırma",
-    "Azərbaycan IT tərəfdaş",
+    "StarSoft Azerbaijan",
+    "StarSoft Baku",
     "starsoft.az",
+    "IT şirkəti Azərbaycan",
+    "IT şirkəti Bakı",
+    "web development Bakı",
+    "sayt sifarişi Bakı",
+    "mobil tətbiq Azərbaycan",
+    "kibertəhlükəsizlik Azərbaycan",
+    "proqram təminatı Bakı",
+    "IT outsourcing Azərbaycan",
+    "software company Azerbaijan",
+    "web development Azerbaijan",
   ],
   authors: [{ name: "StarSoft", url: SITE_URL }],
   creator: "StarSoft",
+  publisher: "StarSoft",
   metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
     type: "website",
     locale: "az_AZ",
@@ -54,7 +62,7 @@ export const metadata: Metadata = {
     siteName: "StarSoft",
     title: TITLE,
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "StarSoft" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "StarSoft — Azərbaycan IT şirkəti" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -73,31 +81,63 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  // Favicon and apple-icon are auto-generated from app/icon.tsx and app/apple-icon.tsx
 };
 
-const organizationJsonLd = {
+const localBusinessJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["LocalBusiness", "ProfessionalService"],
+  "@id": `${SITE_URL}/#organization`,
   name: "StarSoft",
+  alternateName: ["StarSoft Azerbaijan", "StarSoft MMC"],
   url: SITE_URL,
-  logo: `${SITE_URL}/logo.svg`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/logo.svg`,
+  },
+  image: `${SITE_URL}/og-image.png`,
   description: DESCRIPTION,
+  slogan: "Azərbaycan biznesinin texnoloji tərəfdaşı",
   founder: { "@type": "Person", name: "Sərxan Babayev" },
-  foundingLocation: { "@type": "Place", name: "Bakı, Azərbaycan" },
+  foundingDate: "2022",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Bakı",
+    addressRegion: "Bakı",
     addressCountry: "AZ",
   },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 40.4093,
+    longitude: 49.8671,
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Azerbaijan",
+  },
+  telephone: "+994502017164",
+  email: "sarxanbabayevcontact@gmail.com",
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+994-50-201-71-64",
+    telephone: "+994502017164",
     email: "sarxanbabayevcontact@gmail.com",
     contactType: "customer service",
-    availableLanguage: ["Azerbaijani", "English"],
+    availableLanguage: ["Azerbaijani", "English", "Russian"],
   },
-  sameAs: ["https://wa.me/994502017164"],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "IT Xidmətləri",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Vebsayt hazırlanması" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Mobil tətbiq inkişafı" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Kibertəhlükəsizlik" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "İnfrastruktur və DevOps" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Biznes avtomatlaşdırması" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Biznes analitika" } },
+    ],
+  },
+  sameAs: [
+    "https://wa.me/994502017164",
+  ],
 };
 
 export default function RootLayout({
@@ -108,7 +148,7 @@ export default function RootLayout({
       <body className="bg-canvas text-ink antialiased" suppressHydrationWarning>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
         />
         <Navbar />
         <main className="min-h-screen">{children}</main>

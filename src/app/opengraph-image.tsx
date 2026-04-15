@@ -122,7 +122,7 @@ export default async function OgImage() {
               letterSpacing: "0.12em",
             }}
           >
-            Biznesinizi parlat, texniki tərəfi bizə burax
+            Azərbaycan biznesinin texnoloji tərəfdaşı
           </div>
         </div>
       </div>

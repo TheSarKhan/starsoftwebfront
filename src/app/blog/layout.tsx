@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     "biznes analitika",
     "Azərbaycan IT",
   ],
+  alternates: { canonical: "https://starsoft.az/blog" },
   openGraph: {
     title: "Blog | StarSoft",
     description: "Bilik və təcrübə — sahibkarlar üçün praktiki texnoloji yazılar.",

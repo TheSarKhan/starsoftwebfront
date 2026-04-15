@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Layihələr",
   description:
     "StarSoft layihələri. Flagship: testup.az — müasir və zəngin funksionallı imtahan/test platforması.",
+  alternates: { canonical: "https://starsoft.az/projects" },
   openGraph: {
     title: "Layihələr | StarSoft",
     description: "Real iş, real nəticə. Flagship layihəmiz testup.az.",
