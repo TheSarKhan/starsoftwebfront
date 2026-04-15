@@ -139,8 +139,9 @@ export default function AdminProjectsPage() {
                     try {
                       const res = await api.admin.uploadImage(token(), file);
                       setForm({ ...form, imageUrl: res.url });
-                    } catch {
-                      alert("Şəkil yüklənmədi.");
+                    } catch (err) {
+                      const msg = err instanceof Error ? err.message : "Şəkil yüklənmədi.";
+                      alert(msg);
                     } finally {
                       setUploading(false);
                       e.target.value = "";

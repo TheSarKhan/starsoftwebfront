@@ -190,8 +190,19 @@ export const api = {
         body: formData,
       });
       if (!res.ok) {
-        const errText = await res.text().catch(() => res.statusText);
-        throw new Error(`Upload failed: ${res.status} — ${errText}`);
+        let message = `Şəkil yüklənmədi (${res.status}).`;
+        try {
+          const data = await res.json();
+          if (typeof data?.error === "string" && data.error.trim()) {
+            message = data.error;
+          }
+        } catch {
+          const errText = await res.text().catch(() => "");
+          if (errText) {
+            message = `${message} ${errText}`;
+          }
+        }
+        throw new Error(message);
       }
       return res.json();
     },
