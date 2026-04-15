@@ -186,7 +186,7 @@ export default function HomePage() {
 
 
           {/* ── MOBILE HERO ── */}
-          <div className="md:hidden flex-1 flex flex-col px-6 pt-8 pb-6 justify-between overflow-hidden">
+          <div className="md:hidden flex-1 flex flex-col px-5 pt-6 pb-5 justify-between overflow-hidden">
             <div className="flex items-center gap-3 mb-6">
               <motion.div animate={{ rotate: 360 }} transition={{ duration: 24, repeat: Infinity, ease: "linear" }}>
                 <BrandMark theme="gold-on-light" size={40} />
@@ -194,20 +194,20 @@ export default function HomePage() {
               <span className="font-mono text-[11px] text-[var(--color-slate)]/50 uppercase tracking-[0.1em]">01 / 05</span>
             </div>
             <div className="flex-1 flex flex-col justify-center">
-              <h1 className="font-[family-name:var(--font-display)] text-[52px] font-extrabold text-[var(--color-ink)] leading-[0.9] tracking-[-0.035em] mb-6">
+              <h1 className="font-[family-name:var(--font-display)] text-[clamp(2.25rem,11vw,3rem)] font-extrabold text-[var(--color-ink)] leading-[0.9] tracking-[-0.03em] mb-5">
                 Azərbaycan<br />
                 biznesinin<br />
                 <em className="not-italic text-[var(--color-gold)]">texnoloji</em><br />
                 tərəfdaşı.
               </h1>
-              <p className="text-[14px] text-[var(--color-slate)] leading-relaxed mb-8">
+              <p className="text-[13px] text-[var(--color-slate)] leading-relaxed mb-7">
                 Vebsayt, mobil tətbiq, kibertəhlükəsizlik, infrastruktur, avtomatlaşdırma və daha çox — bir tərəfdaşdan, sabit qiymətə.
               </p>
               <GoldButton href="/contact" size="lg" withArrow>
                 Pulsuz konsultasiya alın
               </GoldButton>
             </div>
-            <div className="grid grid-cols-2 gap-0 border-t border-[var(--color-hairline)] mt-6 pt-5">
+            <div className="grid grid-cols-2 gap-0 border-t border-[var(--color-hairline)] mt-5 pt-4">
               {stats.map((s, i) => (
                 <div key={i} className={`flex items-center gap-2 pb-3 ${i % 2 === 1 ? "pl-4 border-l border-[var(--color-hairline)]" : ""} ${i < 2 ? "pb-4" : "pt-4 border-t border-[var(--color-hairline)] pb-0"}`}>
                   <span className="font-[family-name:var(--font-display)] text-[22px] font-extrabold text-[var(--color-ink)] leading-none">{s.stat}</span>
@@ -282,12 +282,12 @@ export default function HomePage() {
           <SlideHeader section="Xidmətlər" n="02" />
 
           {/* Mobile */}
-          <div className="md:hidden flex-1 flex flex-col px-6 py-6 overflow-hidden">
-            <h2 className="font-[family-name:var(--font-display)] text-[36px] font-extrabold text-[var(--color-ink)] leading-[1.0] tracking-[-0.03em] mb-6">
+          <div className="md:hidden flex-1 flex flex-col px-5 py-5 overflow-hidden">
+            <h2 className="font-[family-name:var(--font-display)] text-[clamp(1.9rem,9vw,2.25rem)] font-extrabold text-[var(--color-ink)] leading-[1.0] tracking-[-0.03em] mb-5">
               Bir tərəfdaş.<br />
               <em className="not-italic text-[var(--color-gold)]">Səkkiz sahə.</em>
             </h2>
-            <div className="flex-1 flex flex-col divide-y divide-[var(--color-hairline)] overflow-hidden">
+            <div className="flex-1 flex flex-col divide-y divide-[var(--color-hairline)] overflow-y-auto pr-1">
               {displayServices.map((s, i) => {
                 const Icon = SERVICE_ICONS[s.icon] || Globe;
                 return (
@@ -352,7 +352,7 @@ export default function HomePage() {
 
           {/* Mobile */}
           <div className="md:hidden flex-1 flex flex-col divide-y divide-[var(--color-hairline)] overflow-hidden">
-            <div className="flex-1 px-6 py-5 flex flex-col justify-center">
+            <div className="flex-1 px-5 py-4 flex flex-col justify-center">
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)]/50 mb-4">Əvvəl</p>
               <div className="space-y-2">
                 {["Aylıq 8–12 min AZN — işləsin ya işləməsin.", "Komanda yığmaq aylar aparır.", "Texniki işçi ayrılsa, layihə dayanır.", "Ofis və avadanlıq — istifadə olunsa da, xərc."].map((line, i) => (
@@ -360,7 +360,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 px-6 py-5 flex flex-col justify-center">
+            <div className="flex-1 px-5 py-4 flex flex-col justify-center">
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--color-gold)] mb-4">StarSoft ilə</p>
               <div className="space-y-2">
                 {["Sabit aylıq xərc", "Aylarca əməkdaş axtarışı", "İşçi ayrılma riski", "Ofis və avadanlıq xərci"].map((item) => (
@@ -368,7 +368,7 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <div className="flex-1 px-6 py-5 flex flex-col justify-center">
+            <div className="flex-1 px-5 py-4 flex flex-col justify-center">
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--color-slate)] mb-4">Vədlərimiz</p>
               <div className="space-y-3">
                 {manifesto.map((line, i) => (
@@ -437,7 +437,7 @@ export default function HomePage() {
           {/* Mobile — vertical stack */}
           <div className="md:hidden flex-1 flex flex-col divide-y divide-[var(--color-hairline)] overflow-hidden">
             {steps.map((step, i) => (
-              <div key={i} className="flex-1 px-6 flex flex-col justify-center">
+              <div key={i} className="flex-1 px-5 py-3 flex flex-col justify-center">
                 <span className="font-mono text-[11px] text-[var(--color-slate)]/40 block mb-2">{step.n}</span>
                 <h3 className="font-[family-name:var(--font-display)] text-[22px] font-bold text-[var(--color-ink)] mb-2 leading-tight tracking-[-0.02em]">
                   {step.title}
@@ -468,9 +468,9 @@ export default function HomePage() {
           <SlideHeader section="Əlaqə" n="05" />
 
           {/* Mobile */}
-          <div className="md:hidden flex-1 flex flex-col px-6 py-8 justify-between overflow-hidden">
+          <div className="md:hidden flex-1 flex flex-col px-5 py-6 justify-between overflow-hidden">
             <div>
-              <h2 className="font-[family-name:var(--font-display)] text-[44px] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.035em] mb-6">
+              <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.1rem,10.5vw,2.75rem)] font-extrabold text-[var(--color-ink)] leading-[0.93] tracking-[-0.03em] mb-5">
                 Layihənizi<br />
                 birlikdə<br />
                 qurarıq.
@@ -488,15 +488,15 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
-            <div className="border-t border-[var(--color-hairline)] pt-6 space-y-4">
+            <div className="border-t border-[var(--color-hairline)] pt-5 space-y-3.5">
               {[
                 { label: "E-poçt", value: "sarxanbabayevcontact@gmail.com" },
                 { label: "WhatsApp", value: "+994 50 201 71 64" },
                 { label: "Yer", value: "Bakı, Azərbaycan" },
               ].map(({ label, value }) => (
-                <div key={label} className="flex items-center justify-between">
+                <div key={label} className="flex flex-col items-start gap-1">
                   <p className="text-[11px] text-[var(--color-slate)]/60 uppercase tracking-[0.1em]">{label}</p>
-                  <p className="font-[family-name:var(--font-display)] text-[13px] font-semibold text-[var(--color-ink)]">{value}</p>
+                  <p className="font-[family-name:var(--font-display)] text-[13px] font-semibold text-[var(--color-ink)] break-all">{value}</p>
                 </div>
               ))}
             </div>

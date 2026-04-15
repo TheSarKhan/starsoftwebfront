@@ -11,7 +11,6 @@ const sections = [
     links: [
       { label: "Haqqımızda", href: "/about" },
       { label: "Layihələr", href: "/projects" },
-      { label: "Blog", href: "/blog" },
       { label: "Əlaqə", href: "/contact" },
     ],
   },
@@ -140,7 +139,7 @@ export default function Footer() {
               <Linkedin size={18} strokeWidth={1.5} />
             </a>
           </div>
-          <p>Bakıda hazırlanır. Azərbaycan biznesi üçün.</p>
+          <p>Azərbaycan biznesinin rəqəmsal inkişafı üçün çalışırıq.</p>
         </div>
       </div>
     </footer>

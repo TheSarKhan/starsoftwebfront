@@ -114,7 +114,9 @@ a {
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
-    height: calc(100vh - 4rem);   /* 4rem = 64px navbar */
+    height: 100dvh;
+    padding-top: 4rem; /* 4rem = 64px navbar */
+    box-sizing: border-box;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -136,11 +138,14 @@ a {
 /* Mobile: vertical snap presentation */
 @media (max-width: 767px) {
   .h-scroll-container {
+    display: flex;
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
-    height: calc(100dvh - 4rem);
+    height: 100dvh;
+    padding-top: 4rem;
+    box-sizing: border-box;
   }
   .h-slide {
     min-width: 100vw;
