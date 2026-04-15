@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/about",    label: "Haqqımızda",  prefetchFn: undefined },
   { href: "/services", label: "Xidmətlər",   prefetchFn: prefetch.services },
   { href: "/projects", label: "Layihələr",   prefetchFn: prefetch.projects },
+  { href: "/blog",     label: "Blog",        prefetchFn: prefetch.blogPosts },
   { href: "/contact",  label: "Əlaqə",       prefetchFn: undefined },
 ];
 

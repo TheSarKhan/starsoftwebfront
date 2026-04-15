@@ -11,6 +11,7 @@ const sections = [
     links: [
       { label: "Haqqımızda", href: "/about" },
       { label: "Layihələr", href: "/projects" },
+      { label: "Blog", href: "/blog" },
       { label: "Əlaqə", href: "/contact" },
     ],
   },
