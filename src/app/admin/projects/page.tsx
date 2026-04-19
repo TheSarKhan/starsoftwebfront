@@ -25,34 +25,65 @@ export default function AdminProjectsPage() {
   const [form, setForm] = useState<Partial<Project>>(emptyForm);
   const [editing, setEditing] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const token = () => localStorage.getItem("starsoft_token") || "";
 
   const load = () => api.admin.getProjects(token()).then(setProjects).catch(() => {});
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
+
+  const clearFile = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const openForm = (p?: Project) => {
+    clearFile();
+    setForm(p ?? emptyForm);
+    setEditing(p?.id ?? null);
+    setShowForm(true);
+  };
+
+  const cancel = () => {
+    clearFile();
+    setShowForm(false);
+  };
 
   const save = async () => {
-    if (editing) await api.admin.updateProject(token(), editing, form);
-    else await api.admin.createProject(token(), form);
-    setForm(emptyForm);
-    setEditing(null);
-    setShowForm(false);
-    load();
+    setSaving(true);
+    try {
+      let imageUrl = form.imageUrl ?? "";
+
+      if (selectedFile) {
+        const res = await api.admin.uploadImage(token(), selectedFile);
+        imageUrl = res.url;
+      }
+
+      const payload = { ...form, imageUrl };
+      if (editing) await api.admin.updateProject(token(), editing, payload);
+      else await api.admin.createProject(token(), payload);
+
+      clearFile();
+      setForm(emptyForm);
+      setEditing(null);
+      setShowForm(false);
+      load();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Xəta baş verdi.";
+      alert(msg);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const remove = async (id: number) => {
     if (!confirm("Silmək istəyirsiniz?")) return;
     await api.admin.deleteProject(token(), id);
     load();
-  };
-
-  const edit = (p: Project) => {
-    setForm(p);
-    setEditing(p.id);
-    setShowForm(true);
   };
 
   const fields: { field: keyof Project; label: string }[] = [
@@ -63,6 +94,10 @@ export default function AdminProjectsPage() {
     { field: "projectUrl", label: "Layihə URL" },
   ];
 
+  const imagePreview = previewUrl ?? (form.imageUrl
+    ? `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || ""}${form.imageUrl}`
+    : null);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -70,11 +105,7 @@ export default function AdminProjectsPage() {
           Layihələr
         </h2>
         <button
-          onClick={() => {
-            setForm(emptyForm);
-            setEditing(null);
-            setShowForm(true);
-          }}
+          onClick={() => openForm()}
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--color-gold)] text-white text-[14px] font-semibold rounded-lg hover:bg-[var(--color-gold-hover)] transition-colors"
         >
           <Plus size={16} strokeWidth={2.25} />
@@ -99,57 +130,58 @@ export default function AdminProjectsPage() {
                 />
               </div>
             ))}
+
             <div className="md:col-span-2">
               <label className={labelCls}>Layihə şəkli</label>
               <div className="flex items-center gap-4">
-                {form.imageUrl ? (
+                {imagePreview && (
                   <div className="relative">
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:8080"}${form.imageUrl}`}
+                      src={imagePreview}
                       alt="Preview"
                       className="w-32 h-20 object-cover rounded-lg border border-[var(--color-hairline)]"
                     />
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, imageUrl: "" })}
+                      onClick={() => {
+                        clearFile();
+                        setForm({ ...form, imageUrl: "" });
+                      }}
                       className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center"
                     >
                       <X size={12} />
                     </button>
                   </div>
-                ) : null}
+                )}
                 <button
                   type="button"
-                  disabled={uploading}
                   onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-dashed border-[var(--color-hairline-strong)] rounded-lg text-slate text-[13px] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-dashed border-[var(--color-hairline-strong)] rounded-lg text-slate text-[13px] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors"
                 >
                   <Upload size={15} />
-                  {uploading ? "Yüklənir..." : form.imageUrl ? "Dəyiş" : "Şəkil yüklə"}
+                  {selectedFile ? selectedFile.name : imagePreview ? "Dəyiş" : "Şəkil seç"}
                 </button>
                 <input
                   ref={fileRef}
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/gif"
                   className="hidden"
-                  onChange={async (e) => {
+                  onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    setUploading(true);
-                    try {
-                      const res = await api.admin.uploadImage(token(), file);
-                      setForm({ ...form, imageUrl: res.url });
-                    } catch (err) {
-                      const msg = err instanceof Error ? err.message : "Şəkil yüklənmədi.";
-                      alert(msg);
-                    } finally {
-                      setUploading(false);
-                      e.target.value = "";
-                    }
+                    if (previewUrl) URL.revokeObjectURL(previewUrl);
+                    setSelectedFile(file);
+                    setPreviewUrl(URL.createObjectURL(file));
                   }}
                 />
               </div>
+              {selectedFile && (
+                <p className="text-[12px] text-slate mt-1">
+                  Seçilib: {selectedFile.name} — Saxla düyməsinə basanda yüklənəcək
+                </p>
+              )}
             </div>
+
             <div>
               <label className={labelCls}>Kateqoriya</label>
               <select
@@ -179,15 +211,18 @@ export default function AdminProjectsPage() {
               ))}
             </div>
           </div>
+
           <div className="flex gap-3 mt-5">
             <button
               onClick={save}
-              className="px-5 py-2 bg-[var(--color-gold)] text-white font-semibold text-[14px] rounded-lg hover:bg-[var(--color-gold-hover)] transition-colors"
+              disabled={saving}
+              className="px-5 py-2 bg-[var(--color-gold)] text-white font-semibold text-[14px] rounded-lg hover:bg-[var(--color-gold-hover)] transition-colors disabled:opacity-60"
             >
-              Saxla
+              {saving ? "Saxlanır..." : "Saxla"}
             </button>
             <button
-              onClick={() => setShowForm(false)}
+              onClick={cancel}
+              disabled={saving}
               className="px-5 py-2 border border-[var(--color-hairline-strong)] text-slate text-[14px] font-medium rounded-lg hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors"
             >
               Ləğv et
@@ -216,7 +251,7 @@ export default function AdminProjectsPage() {
                 <td className="px-4 py-3">
                   {p.imageUrl ? (
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:8080"}${p.imageUrl}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || ""}${p.imageUrl}`}
                       alt={p.title}
                       className="w-16 h-10 object-cover rounded"
                     />
@@ -246,7 +281,7 @@ export default function AdminProjectsPage() {
                 <td className="px-4 py-3">
                   <div className="flex gap-3">
                     <button
-                      onClick={() => edit(p)}
+                      onClick={() => openForm(p)}
                       className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] text-[13px] font-semibold"
                     >
                       Redaktə
@@ -270,3 +305,4 @@ export default function AdminProjectsPage() {
     </div>
   );
 }
+
