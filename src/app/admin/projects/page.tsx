@@ -56,25 +56,15 @@ export default function AdminProjectsPage() {
   const save = async () => {
     setSaving(true);
     try {
-      let imageUrl = form.imageUrl ?? "";
-
-      if (selectedFile) {
-        const res = await api.admin.uploadImage(token(), selectedFile);
-        imageUrl = res.url;
-      }
-
-      const payload = { ...form, imageUrl };
-      if (editing) await api.admin.updateProject(token(), editing, payload);
-      else await api.admin.createProject(token(), payload);
-
+      if (editing) await api.admin.updateProject(token(), editing, form, selectedFile ?? undefined);
+      else await api.admin.createProject(token(), form, selectedFile ?? undefined);
       clearFile();
       setForm(emptyForm);
       setEditing(null);
       setShowForm(false);
       load();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Xəta baş verdi.";
-      alert(msg);
+      alert(err instanceof Error ? err.message : "Xəta baş verdi.");
     } finally {
       setSaving(false);
     }

@@ -105,15 +105,35 @@ export const api = {
 
     getProjects: (token: string) =>
       cached("admin:projects", () => authFetcher<Project[]>("/admin/projects", token), ADMIN_TTL),
-    createProject: async (token: string, data: Partial<Project>) => {
-      const res = await authFetcher<Project>("/admin/projects", token, { method: "POST", body: JSON.stringify(data) });
+    createProject: async (token: string, data: Partial<Project>, imageFile?: File) => {
+      const form = toProjectForm(data, imageFile);
+      const res = await fetch(`${API_BASE}/admin/projects`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+        cache: "no-store",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Xəta ${res.status}`);
+      }
       invalidateCache("admin:projects", "projects", "projects:featured", "admin:stats");
-      return res;
+      return res.json() as Promise<Project>;
     },
-    updateProject: async (token: string, id: number, data: Partial<Project>) => {
-      const res = await authFetcher<Project>(`/admin/projects/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+    updateProject: async (token: string, id: number, data: Partial<Project>, imageFile?: File) => {
+      const form = toProjectForm(data, imageFile);
+      const res = await fetch(`${API_BASE}/admin/projects/${id}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+        cache: "no-store",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Xəta ${res.status}`);
+      }
       invalidateCache("admin:projects", "projects", "projects:featured");
-      return res;
+      return res.json() as Promise<Project>;
     },
     deleteProject: async (token: string, id: number) => {
       await authFetcher<void>(`/admin/projects/${id}`, token, { method: "DELETE" });
@@ -209,6 +229,15 @@ export const api = {
       authFetcher<void>(`/admin/images/${filename}`, token, { method: "DELETE" }),
   },
 };
+
+function toProjectForm(data: Partial<Project>, imageFile?: File): FormData {
+  const form = new FormData();
+  (Object.entries(data) as [string, unknown][]).forEach(([k, v]) => {
+    if (v !== null && v !== undefined) form.append(k, String(v));
+  });
+  if (imageFile) form.append("image", imageFile);
+  return form;
+}
 
 // ─── Prefetch helpers (call on link hover for near-instant navigation) ───────
 export const prefetch = {
