@@ -193,14 +193,13 @@ export const api = {
         let message = `Şəkil yüklənmədi (${res.status}).`;
         try {
           const data = await res.json();
-          if (typeof data?.error === "string" && data.error.trim()) {
-            message = data.error;
+          const detail = data?.message || data?.error || "";
+          if (typeof detail === "string" && detail.trim()) {
+            message = `[${res.status}] ${detail}`;
           }
         } catch {
           const errText = await res.text().catch(() => "");
-          if (errText) {
-            message = `${message} ${errText}`;
-          }
+          if (errText) message = `[${res.status}] ${errText.slice(0, 300)}`;
         }
         throw new Error(message);
       }
