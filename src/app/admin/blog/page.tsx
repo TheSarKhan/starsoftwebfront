@@ -42,8 +42,8 @@ export default function AdminBlogPage() {
     try {
       const { url } = await api.admin.uploadImage(token(), file);
       setForm((f) => ({ ...f, coverImage: url }));
-    } catch {
-      alert("Şəkil yüklənmədi");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Şəkil yüklənmədi.");
     } finally {
       setCoverUploading(false);
     }

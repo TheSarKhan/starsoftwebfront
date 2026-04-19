@@ -49,8 +49,9 @@ export default function QuillEditor({ value, onChange, placeholder }: Props) {
         quill.insertEmbed(range ? range.index : 0, "image", url);
         quill.setSelection((range ? range.index : 0) + 1);
       } catch (err) {
+        const msg = err instanceof Error ? err.message : "Şəkil yüklənmədi.";
         console.error("Image upload error:", err);
-        alert("Şəkil yüklənmədi. Yenidən cəhd edin.");
+        alert(msg);
       }
     };
     input.click();
