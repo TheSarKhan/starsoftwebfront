@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Plus, Star, Upload, X } from "lucide-react";
-import { api, Project } from "@/lib/api";
+import { api, IMAGE_BASE, Project } from "@/lib/api";
 
 const emptyForm: Partial<Project> = {
   title: "",
@@ -85,7 +85,7 @@ export default function AdminProjectsPage() {
   ];
 
   const imagePreview = previewUrl ?? (form.imageUrl
-    ? `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || ""}${form.imageUrl}`
+    ? `${IMAGE_BASE}${form.imageUrl}`
     : null);
 
   return (
@@ -241,7 +241,7 @@ export default function AdminProjectsPage() {
                 <td className="px-4 py-3">
                   {p.imageUrl ? (
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || ""}${p.imageUrl}`}
+                      src={`${IMAGE_BASE}${p.imageUrl}`}
                       alt={p.title}
                       className="w-16 h-10 object-cover rounded"
                     />

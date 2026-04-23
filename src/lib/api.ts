@@ -1,6 +1,9 @@
 const normalizedPublicApi = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
 const normalizedBackend = process.env.BACKEND_URL?.replace(/\/$/, "");
 
+export const IMAGE_BASE =
+  normalizedPublicApi?.replace(/\/api$/, "") ?? "http://localhost:8080";
+
 const API_BASE =
   typeof window === "undefined"
     ? (normalizedBackend

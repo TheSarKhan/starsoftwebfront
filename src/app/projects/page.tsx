@@ -5,10 +5,7 @@ import { motion } from "framer-motion";
 import { ExternalLink, ArrowUpRight } from "lucide-react";
 import GoldButton from "@/components/GoldButton";
 import Image from "next/image";
-import { api, Project } from "@/lib/api";
-
-const API_HOST =
-  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:8080";
+import { api, IMAGE_BASE, Project } from "@/lib/api";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -180,7 +177,7 @@ export default function ProjectsPage() {
               >
                 {p.imageUrl ? (
                   <Image
-                    src={`${API_HOST}${p.imageUrl}`}
+                    src={`${IMAGE_BASE}${p.imageUrl}`}
                     alt={p.title}
                     fill
                     className="object-cover"

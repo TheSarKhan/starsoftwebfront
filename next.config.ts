@@ -12,8 +12,7 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost" },
       { protocol: "https", hostname: "starsoft.az" },
       { protocol: "https", hostname: "www.starsoft.az" },
-      { protocol: "https", hostname: "starsoft.az" },
-      { protocol: "https", hostname: "www.starsoft.az" },
+      { protocol: "https", hostname: "api.starsoft.az" },
     ],
   },
 
