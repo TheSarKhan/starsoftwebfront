@@ -16,7 +16,7 @@ interface Message {
 const WELCOME_TEXT =
   "Salam, StarSoft-a xoş gəldiniz. Xidmətlər, qiymət, müddət və ya əlaqə haqqında suallarınıza cavab verə bilərəm.";
 
-const QUICK_REPLIES = ["Xidmətlər", "Qiymət necədir", "Necə işləyirsiniz", "Əlaqə məlumatları"];
+const QUICK_REPLIES = ["Xidmətlər", "Qiymət necədir", "Endirim var?", "Necə işləyirsiniz"];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
