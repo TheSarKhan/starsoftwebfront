@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Plus, Star, Upload, X } from "lucide-react";
 import { api, IMAGE_BASE, Project } from "@/lib/api";
+import { readFileAsDataUrl, MAX_IMAGE_BYTES } from "@/lib/fileUpload";
 
 const emptyForm: Partial<Project> = {
   title: "",
@@ -20,45 +21,42 @@ const inputCls =
   "w-full px-3 py-2 bg-white border border-[var(--color-hairline-strong)] rounded-lg text-ink text-[14px] focus:outline-none focus:border-[var(--color-gold)] focus:ring-2 focus:ring-[var(--color-gold-soft)] transition-all";
 const labelCls = "block text-[12.5px] font-medium text-slate mb-1";
 
+const resolveImageSrc = (url?: string | null) => {
+  if (!url) return null;
+  if (url.startsWith("data:") || url.startsWith("http")) return url;
+  return `${IMAGE_BASE}${url}`;
+};
+
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [form, setForm] = useState<Partial<Project>>(emptyForm);
   const [editing, setEditing] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [reading, setReading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const token = () => localStorage.getItem("starsoft_token") || "";
 
   const load = () => api.admin.getProjects(token()).then(setProjects).catch(() => {});
   useEffect(() => { load(); }, []);
 
-  const clearFile = () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setSelectedFile(null);
-    setPreviewUrl(null);
-    if (fileRef.current) fileRef.current.value = "";
-  };
-
   const openForm = (p?: Project) => {
-    clearFile();
     setForm(p ?? emptyForm);
     setEditing(p?.id ?? null);
     setShowForm(true);
   };
 
   const cancel = () => {
-    clearFile();
+    setForm(emptyForm);
+    setEditing(null);
     setShowForm(false);
   };
 
   const save = async () => {
     setSaving(true);
     try {
-      if (editing) await api.admin.updateProject(token(), editing, form, selectedFile ?? undefined);
-      else await api.admin.createProject(token(), form, selectedFile ?? undefined);
-      clearFile();
+      if (editing) await api.admin.updateProject(token(), editing, form);
+      else await api.admin.createProject(token(), form);
       setForm(emptyForm);
       setEditing(null);
       setShowForm(false);
@@ -76,6 +74,22 @@ export default function AdminProjectsPage() {
     load();
   };
 
+  const onFileChange = async (file: File) => {
+    setReading(true);
+    try {
+      const dataUrl = await readFileAsDataUrl(file, {
+        maxBytes: MAX_IMAGE_BYTES,
+        kind: "Şəkil",
+      });
+      setForm((f) => ({ ...f, imageUrl: dataUrl }));
+    } catch {
+      // readFileAsDataUrl already shows an alert
+    } finally {
+      setReading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
   const fields: { field: keyof Project; label: string }[] = [
     { field: "title", label: "Başlıq" },
     { field: "description", label: "Açıqlama" },
@@ -84,9 +98,7 @@ export default function AdminProjectsPage() {
     { field: "projectUrl", label: "Layihə URL" },
   ];
 
-  const imagePreview = previewUrl ?? (form.imageUrl
-    ? `${IMAGE_BASE}${form.imageUrl}`
-    : null);
+  const imagePreview = resolveImageSrc(form.imageUrl);
 
   return (
     <div>
@@ -133,10 +145,7 @@ export default function AdminProjectsPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => {
-                        clearFile();
-                        setForm({ ...form, imageUrl: "" });
-                      }}
+                      onClick={() => setForm({ ...form, imageUrl: "" })}
                       className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center"
                     >
                       <X size={12} />
@@ -146,10 +155,11 @@ export default function AdminProjectsPage() {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-2 px-4 py-2 border border-dashed border-[var(--color-hairline-strong)] rounded-lg text-slate text-[13px] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors"
+                  disabled={reading}
+                  className="inline-flex items-center gap-2 px-4 py-2 border border-dashed border-[var(--color-hairline-strong)] rounded-lg text-slate text-[13px] hover:border-[var(--color-gold)] hover:text-[var(--color-gold)] transition-colors disabled:opacity-60"
                 >
                   <Upload size={15} />
-                  {selectedFile ? selectedFile.name : imagePreview ? "Dəyiş" : "Şəkil seç"}
+                  {reading ? "Oxunur..." : imagePreview ? "Dəyiş" : "Şəkil seç"}
                 </button>
                 <input
                   ref={fileRef}
@@ -158,18 +168,10 @@ export default function AdminProjectsPage() {
                   className="hidden"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (!file) return;
-                    if (previewUrl) URL.revokeObjectURL(previewUrl);
-                    setSelectedFile(file);
-                    setPreviewUrl(URL.createObjectURL(file));
+                    if (file) onFileChange(file);
                   }}
                 />
               </div>
-              {selectedFile && (
-                <p className="text-[12px] text-slate mt-1">
-                  Seçilib: {selectedFile.name} — Saxla düyməsinə basanda yüklənəcək
-                </p>
-              )}
             </div>
 
             <div>
@@ -205,7 +207,7 @@ export default function AdminProjectsPage() {
           <div className="flex gap-3 mt-5">
             <button
               onClick={save}
-              disabled={saving}
+              disabled={saving || reading}
               className="px-5 py-2 bg-[var(--color-gold)] text-white font-semibold text-[14px] rounded-lg hover:bg-[var(--color-gold-hover)] transition-colors disabled:opacity-60"
             >
               {saving ? "Saxlanır..." : "Saxla"}
@@ -236,56 +238,59 @@ export default function AdminProjectsPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--color-hairline)]">
-            {projects.map((p) => (
-              <tr key={p.id} className="hover:bg-mist transition-colors">
-                <td className="px-4 py-3">
-                  {p.imageUrl ? (
-                    <img
-                      src={`${IMAGE_BASE}${p.imageUrl}`}
-                      alt={p.title}
-                      className="w-16 h-10 object-cover rounded"
-                    />
-                  ) : (
-                    <span className="text-mist-slate text-[12px]">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-ink text-[14px] font-medium">{p.title}</td>
-                <td className="px-4 py-3 text-slate text-[13px]">{p.category}</td>
-                <td className="px-4 py-3 text-slate text-[12px]">{p.technologies}</td>
-                <td className="px-4 py-3">
-                  {p.featured ? (
-                    <Star size={15} strokeWidth={2} className="text-[var(--color-gold)] fill-[var(--color-gold)]" />
-                  ) : (
-                    <span className="text-mist-slate">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`px-2 py-0.5 rounded-md text-[11px] font-medium ${
-                      p.active ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                    }`}
-                  >
-                    {p.active ? "Aktiv" : "Deaktiv"}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => openForm(p)}
-                      className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] text-[13px] font-semibold"
+            {projects.map((p) => {
+              const src = resolveImageSrc(p.imageUrl);
+              return (
+                <tr key={p.id} className="hover:bg-mist transition-colors">
+                  <td className="px-4 py-3">
+                    {src ? (
+                      <img
+                        src={src}
+                        alt={p.title}
+                        className="w-16 h-10 object-cover rounded"
+                      />
+                    ) : (
+                      <span className="text-mist-slate text-[12px]">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-ink text-[14px] font-medium">{p.title}</td>
+                  <td className="px-4 py-3 text-slate text-[13px]">{p.category}</td>
+                  <td className="px-4 py-3 text-slate text-[12px]">{p.technologies}</td>
+                  <td className="px-4 py-3">
+                    {p.featured ? (
+                      <Star size={15} strokeWidth={2} className="text-[var(--color-gold)] fill-[var(--color-gold)]" />
+                    ) : (
+                      <span className="text-mist-slate">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-medium ${
+                        p.active ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+                      }`}
                     >
-                      Redaktə
-                    </button>
-                    <button
-                      onClick={() => remove(p.id)}
-                      className="text-red-600 hover:text-red-700 text-[13px] font-semibold"
-                    >
-                      Sil
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {p.active ? "Aktiv" : "Deaktiv"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => openForm(p)}
+                        className="text-[var(--color-gold)] hover:text-[var(--color-gold-hover)] text-[13px] font-semibold"
+                      >
+                        Redaktə
+                      </button>
+                      <button
+                        onClick={() => remove(p.id)}
+                        className="text-red-600 hover:text-red-700 text-[13px] font-semibold"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         {projects.length === 0 && (
@@ -295,4 +300,3 @@ export default function AdminProjectsPage() {
     </div>
   );
 }
-

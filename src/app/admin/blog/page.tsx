@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import { Plus, ImagePlus, X } from "lucide-react";
 import { api, BlogPost } from "@/lib/api";
+import { readFileAsDataUrl, MAX_IMAGE_BYTES } from "@/lib/fileUpload";
 
 // Lazy load the heavy Quill editor — only downloaded when the form is opened
 const QuillEditor = dynamic(() => import("@/components/QuillEditor"), {
@@ -40,10 +41,13 @@ export default function AdminBlogPage() {
   const uploadCover = async (file: File) => {
     setCoverUploading(true);
     try {
-      const { url } = await api.admin.uploadImage(token(), file);
-      setForm((f) => ({ ...f, coverImage: url }));
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Şəkil yüklənmədi.");
+      const dataUrl = await readFileAsDataUrl(file, {
+        maxBytes: MAX_IMAGE_BYTES,
+        kind: "Şəkil",
+      });
+      setForm((f) => ({ ...f, coverImage: dataUrl }));
+    } catch {
+      // readFileAsDataUrl already shows an alert
     } finally {
       setCoverUploading(false);
     }

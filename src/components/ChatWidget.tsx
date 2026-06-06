@@ -120,8 +120,12 @@ export default function ChatWidget() {
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-5 py-4 border-b border-[var(--color-hairline)] bg-[var(--color-ink)] flex-shrink-0">
-              <div className="w-8 h-8 rounded-full bg-[var(--color-gold)] flex items-center justify-center flex-shrink-0">
-                <span className="font-[family-name:var(--font-display)] text-[13px] font-bold text-white leading-none">S</span>
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 p-1.5">
+                <img
+                  src="/logo-mark.svg"
+                  alt="StarSoft"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <p className="text-[14px] font-semibold text-white leading-none mb-0.5">StarSoft Köməkçi</p>

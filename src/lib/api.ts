@@ -108,12 +108,14 @@ export const api = {
 
     getProjects: (token: string) =>
       cached("admin:projects", () => authFetcher<Project[]>("/admin/projects", token), ADMIN_TTL),
-    createProject: async (token: string, data: Partial<Project>, imageFile?: File) => {
-      const form = toProjectForm(data, imageFile);
+    createProject: async (token: string, data: Partial<Project>) => {
       const res = await fetch(`${API_BASE}/admin/projects`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: form,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
         cache: "no-store",
       });
       if (!res.ok) {
@@ -123,12 +125,14 @@ export const api = {
       invalidateCache("admin:projects", "projects", "projects:featured", "admin:stats");
       return res.json() as Promise<Project>;
     },
-    updateProject: async (token: string, id: number, data: Partial<Project>, imageFile?: File) => {
-      const form = toProjectForm(data, imageFile);
+    updateProject: async (token: string, id: number, data: Partial<Project>) => {
       const res = await fetch(`${API_BASE}/admin/projects/${id}`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: form,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
         cache: "no-store",
       });
       if (!res.ok) {
@@ -232,15 +236,6 @@ export const api = {
       authFetcher<void>(`/admin/images/${filename}`, token, { method: "DELETE" }),
   },
 };
-
-function toProjectForm(data: Partial<Project>, imageFile?: File): FormData {
-  const form = new FormData();
-  (Object.entries(data) as [string, unknown][]).forEach(([k, v]) => {
-    if (v !== null && v !== undefined) form.append(k, String(v));
-  });
-  if (imageFile) form.append("image", imageFile);
-  return form;
-}
 
 // ─── Prefetch helpers (call on link hover for near-instant navigation) ───────
 export const prefetch = {

@@ -177,9 +177,10 @@ export default function ProjectsPage() {
               >
                 {p.imageUrl ? (
                   <Image
-                    src={`${IMAGE_BASE}${p.imageUrl}`}
+                    src={p.imageUrl.startsWith("data:") || p.imageUrl.startsWith("http") ? p.imageUrl : `${IMAGE_BASE}${p.imageUrl}`}
                     alt={p.title}
                     fill
+                    unoptimized={p.imageUrl.startsWith("data:")}
                     className="object-cover"
                   />
                 ) : (
