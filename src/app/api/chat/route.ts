@@ -1,7 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const OPENAI_MODEL = "gpt-4o-mini";
+const OPENAI_MODEL = "gpt-4.1-nano";
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+
+const MAX_MESSAGE_CHARS = 1000;
+const PER_IP_PER_MINUTE = 8;
+const PER_IP_PER_HOUR = 40;
+const GLOBAL_PER_HOUR = 500;
+
+const ipBuckets = new Map<string, number[]>();
+const globalBucket: number[] = [];
+
+function getClientIp(req: NextRequest): string {
+  const cf = req.headers.get("cf-connecting-ip");
+  if (cf) return cf.trim();
+  const real = req.headers.get("x-real-ip");
+  if (real) return real.trim();
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return "unknown";
+}
+
+function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
+  const now = Date.now();
+  const minuteAgo = now - 60_000;
+  const hourAgo = now - 3_600_000;
+
+  while (globalBucket.length && globalBucket[0] < hourAgo) globalBucket.shift();
+  if (globalBucket.length >= GLOBAL_PER_HOUR) {
+    return { ok: false, reason: "global" };
+  }
+
+  let hits = ipBuckets.get(ip);
+  if (!hits) {
+    hits = [];
+    ipBuckets.set(ip, hits);
+  }
+  while (hits.length && hits[0] < hourAgo) hits.shift();
+  const lastMinute = hits.filter((t) => t >= minuteAgo).length;
+  if (lastMinute >= PER_IP_PER_MINUTE) return { ok: false, reason: "minute" };
+  if (hits.length >= PER_IP_PER_HOUR) return { ok: false, reason: "hour" };
+
+  hits.push(now);
+  globalBucket.push(now);
+
+  if (ipBuckets.size > 5000) {
+    for (const [k, v] of ipBuckets) {
+      if (!v.length || v[v.length - 1] < hourAgo) ipBuckets.delete(k);
+    }
+  }
+  return { ok: true };
+}
 
 const SYSTEM_PROMPT = `Sən "StarSoft Köməkçi" — StarSoft IT şirkətinin rəsmi sayt məsləhətçisisən. Robot deyil, peşəkar, mehriban, dürüst məsləhətçisən.
 
@@ -142,6 +191,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ text: "Konfiqurasiya xətası." }, { status: 500 });
   }
 
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(ip);
+  if (!rl.ok) {
+    const msg =
+      rl.reason === "global"
+        ? "Hal-hazırda yüksək yüklənmə var, bir az sonra yenidən cəhd edin."
+        : "Çox sürətli yazırsınız, bir az gözləyin və yenidən cəhd edin.";
+    return NextResponse.json({ text: msg }, { status: 429 });
+  }
+
   const body = await req.json();
   const allMessages: ChatMessage[] = body.messages ?? [];
 
@@ -151,7 +210,18 @@ export async function POST(req: NextRequest) {
   }
   const messages = allMessages.slice(firstUserIdx);
 
-  const recentMessages = messages.slice(-10);
+  const lastUser = [...messages].reverse().find((m) => m.role === "user");
+  if (lastUser && lastUser.text.length > MAX_MESSAGE_CHARS) {
+    return NextResponse.json(
+      { text: `Mesaj çox uzundur (maksimum ${MAX_MESSAGE_CHARS} simvol). Zəhmət olmasa qısaldın.` },
+      { status: 200 },
+    );
+  }
+
+  const recentMessages = messages.slice(-10).map((m) => ({
+    ...m,
+    text: m.text.slice(0, MAX_MESSAGE_CHARS),
+  }));
 
   const openaiBody = {
     model: OPENAI_MODEL,
