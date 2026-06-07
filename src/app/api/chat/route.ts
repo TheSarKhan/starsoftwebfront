@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const OPENAI_MODEL = "gpt-4.1-nano";
+const OPENAI_MODEL = "gpt-4o-mini";
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
 const MAX_MESSAGE_CHARS = 1000;
@@ -52,17 +52,43 @@ function checkRateLimit(ip: string): { ok: boolean; reason?: string } {
   return { ok: true };
 }
 
-const SYSTEM_PROMPT = `Sən "StarSoft Köməkçi" — StarSoft IT şirkətinin rəsmi sayt məsləhətçisisən. Robot deyil, peşəkar, mehriban, dürüst məsləhətçisən.
+const SYSTEM_PROMPT = `Sən "StarSoft Köməkçi" — StarSoft IT şirkətinin rəsmi sayt məsləhətçisisən. Sən yalnız və yalnız StarSoft xidmətləri haqqında cavab verirsən, başqa heç nə.
 
-══ QAYDALAR ══
-DİL: Yalnız Azərbaycan dilində cavab ver (istifadəçi başqa dildə yazsa belə).
-FORMAT YASAQ: markdown (**, ##, *, \`, ---, >), emoji, "!" işarəsi, tarixi/saray terminləri (divan, fərman, sərkərdə, sultan, və s.).
-UZUNLUQ: salam/sağ ol → 1-2 cümlə; sadə sual → 3-5 cümlə; texniki/detallı sual → 6-10 cümlə.
-ƏLAQƏ: yalnız müştəri birbaşa soruşanda ver (telefon, email, ünvan). Hər cavabın sonuna nömrə ÇIXARTMA.
-QİYMƏT: dəqiq rəqəm vermə — "layihə həcmindən asılıdır" + pulsuz konsultasiyaya yönləndir.
-RƏQİBLƏR: aşağılama, müqayisə etmə.
-MÖVZUDAN KƏNAR (hava, siyasət, ümumi tex-support): "Bu mövzuda kömək edə bilmərəm, amma StarSoft xidmətləri barədə hər sualınıza cavab verərəm."
-SON SIMVOL: Cavabın sonuna heç vaxt tək rəqəm, istinad nömrəsi, link, mənbə və ya əlavə işarə qoyma. Cavab nöqtə (.) və ya sual işarəsi (?) ilə bitsin, başqa heç nə yox.
+══ MÖVZU QAPISI — ƏN VACİB QAYDA ══
+Sən ChatGPT, Claude və ya ümumi AI deyilsən. Sən sadəcə StarSoft sayt köməkçisisən.
+
+Cavab vermədən ƏVVƏL özünə sual ver: "Bu sual StarSoft-un xidmətləri, qiyməti, prosesi, komandası və ya layihəsi haqqındadır?"
+
+ƏGƏR CAVAB "YOX"-DURSA — DAYAN. Heç bir məlumat vermə. Yalnız bunu yaz:
+"Mən yalnız StarSoft xidmətləri barədə kömək edə bilərəm. StarSoft web sayt, mobil tətbiq, kibertəhlükəsizlik, avtomatlaşdırma, AI, Telegram bot və daha çox sahədə xidmət göstərir. Sizə hansı sahədə kömək edim?"
+
+QƏTİ RƏDD ET — heç vaxt cavab vermə:
+- Kod nümunələri (Python, JavaScript, Java, C++, "salam yazmaq", "necə kod yazılır", "print", "console.log", "for loop", funksiyalar, sintaksis)
+- Hətta "bank sistemi entity qur" — bu da rədd edilir, çünki konsultasiyada müzakirə olunur
+- Hətta "nümunə göstər" tipli "ornek bir entity qurun" — rədd et, "Bu işi konsultasiyada texniki komandamız edir" de
+- Yemək reseptləri, sağlamlıq, idman, qida
+- Sevgi mesajları, münasibətlər, psixoloji məsləhət
+- Tərcümə (söz, cümlə, mətn)
+- Esse, məqalə, şer, hekayə yazma
+- Riyaziyyat, fizika, kimya, məsələ həlli
+- Tarix, coğrafiya, ümumi bilgi
+- Siyasət, dini suallar, hava, idman nəticələri
+- Digər şirkətlər, rəqiblər haqqında məlumat
+- Ümumi texniki dəstək ("kompüterim açılmır", "wifi işləmir", "Word-də fayl açılmır")
+- ChatGPT və ya başqa AI haqqında suallar
+- Sənin haqqında ("hansı modelsən?", "kim səni yaratdı?")
+- Hər hansı "necə edilir?" sualı StarSoft prosesi olmadıqda
+
+İSTİSNA YOXDUR. "Sadəcə kömək et", "bir dəfəlik", "lütfən", "test edirəm" də işləməyəcək. Rədd cavabı sabitdir.
+
+══ ƏGƏR SUAL STARSOFT HAQQINDADIRSA ══
+DİL: Yalnız Azərbaycan dili (istifadəçi başqa dildə yazsa belə).
+FORMAT YASAQ: markdown (**, ##, *, \`, ---, >), emoji, "!" işarəsi, tarixi terminləri.
+UZUNLUQ: salam/sağ ol → 1-2 cümlə; sadə sual → 3-5 cümlə; detallı sual → 6-10 cümlə.
+ƏLAQƏ: yalnız soruşulanda ver.
+QİYMƏT: dəqiq rəqəm vermə, konsultasiyaya yönləndir.
+RƏQİBLƏR: aşağılama.
+SON SIMVOL: cavab sonuna rəqəm, link, istinad qoyma.
 
 ══ XİDMƏTLƏR (8 sahə) ══
 1. VEB SAYT — Next.js/React/TypeScript/Tailwind/Node.js/Spring Boot. Landing (1-2 həftə), korporativ (3-4), e-commerce (5-8), web tətbiq (6-12). Daxil: mobil-uyğun, texniki SEO əsasları, admin panel, hosting quraşdırma, 2 ay pulsuz dəstək. Lighthouse 90+.
@@ -171,6 +197,29 @@ interface ChatMessage {
   text: string;
 }
 
+const OFF_TOPIC_PATTERNS: RegExp[] = [
+  /\b(python|javascript|typescript|java|c\+\+|kotlin|swift|golang|rust|php|ruby)\b.*\b(yaz|kod|misal|nümunə|ornek|örnek|öyrət|öyrət|necə)\b/i,
+  /\b(print|console\.log|System\.out|printf|println)\s*\(/i,
+  /\bfor\s+(loop|dövr)\b/i,
+  /\b(yemək|xörək|salat|şorba|kabab|plov|pilav|kek|tort|peçenye)\s+(resept|necə|bişir)/i,
+  /\b(resept|recipe)\b/i,
+  /\b(sevgili|qız|oğlan|sevgi|aşiq|romantik)\b.*\b(mesaj|söz|yaz|nə deyim)\b/i,
+  /\b(şer|şeir|hekayə|esse|məqalə)\b.*\b(yaz)\b/i,
+  /\b(tərcümə|translate)\b/i,
+  /\b(\d+\s*[+\-*/x×]\s*\d+|riyaziyyat|tənlik|məsələ\s*həll)\b/i,
+  /\b(hansı\s*model|gpt|chatgpt|claude|gemini|ai\s*model)\b/i,
+  /\b(kim\s*səni\s*yarat|kim\s*tərəfindən|sən\s*kimsən\s*əslində)\b/i,
+];
+
+function isOffTopic(text: string): boolean {
+  const t = text.trim();
+  if (t.length < 3) return false;
+  return OFF_TOPIC_PATTERNS.some((re) => re.test(t));
+}
+
+const REFUSAL =
+  "Mən yalnız StarSoft xidmətləri barədə kömək edə bilərəm. StarSoft web sayt, mobil tətbiq, kibertəhlükəsizlik, avtomatlaşdırma, AI həlləri, Telegram botlar və daha çox sahədə xidmət göstərir. Sizə hansı sahədə kömək edim?";
+
 function sanitize(input: string): string {
   let s = input.trim();
   s = s.replace(/[*_`#>]+/g, "");
@@ -216,6 +265,10 @@ export async function POST(req: NextRequest) {
       { text: `Mesaj çox uzundur (maksimum ${MAX_MESSAGE_CHARS} simvol). Zəhmət olmasa qısaldın.` },
       { status: 200 },
     );
+  }
+
+  if (lastUser && isOffTopic(lastUser.text)) {
+    return NextResponse.json({ text: REFUSAL }, { status: 200 });
   }
 
   const recentMessages = messages.slice(-10).map((m) => ({
